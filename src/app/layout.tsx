@@ -57,7 +57,14 @@ export const metadata: Metadata = {
     siteName: empresa.nome,
     url: urlSite,
   },
-  robots: { index: true, follow: true },
+  // Segunda trava, além do robots.ts: o disallow do robots.txt impede
+  // rastreamento, mas não indexação se a página for descoberta por um
+  // link externo. Essa meta tag garante noindex nos dois casos enquanto
+  // o conteúdo não estiver revisado. Mesma variável dos dois lugares.
+  robots:
+    process.env.NEXT_PUBLIC_INDEXAR === "true"
+      ? { index: true, follow: true }
+      : { index: false, follow: false },
   alternates: { canonical: "/" },
 };
 
