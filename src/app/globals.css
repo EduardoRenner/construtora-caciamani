@@ -1,0 +1,408 @@
+@import "tailwindcss";
+
+/* ------------------------------------------------------------------
+   TOKENS — Construtora Caciamani
+
+   O site tem DOIS temas. O escuro é o padrão, e sai direto da logo:
+   azul-marinho profundo, o ciano do desenho dos prédios e o âmbar do
+   logotipo. O claro é o caderno de obra original: cal, concreto, vidro.
+
+   Como a troca funciona: o Tailwind v4 emite cada cor como variável CSS
+   e as utilidades referenciam essa variável. Então basta reatribuir as
+   mesmas variáveis sob `[data-tema="…"]` — nenhuma classe de componente
+   precisa mudar. Os valores abaixo, no `@theme`, existem só para o
+   Tailwind saber quais utilidades gerar.
+
+   Regra dura de uso da cor:
+   - `marca` (amarelo/âmbar) é MARCAÇÃO de canteiro, não papel de parede.
+     Nunca é fundo de bloco grande, nunca é cor de texto sobre claro.
+   - `acento` (ciano) só existe no tema escuro; no claro ele cai para o
+     amarelo legível, para não introduzir uma cor que a marca não tem.
+   - `oxido` entra no máximo uma vez por tela.
+
+   PAPÉIS — quatro deles se separam porque divergem entre os temas:
+   - `cal` / `cal-2`  superfície da página
+   - `contraste`      a seção que inverte (escura no claro, elevada no escuro)
+   - `sobre-contraste` tinta sobre essa seção
+   - `noite`          tinta principal sobre a superfície da página
+------------------------------------------------------------------ */
+@theme {
+  --color-cal: #0a1826;
+  --color-cal-2: #0f2236;
+  --color-contraste: #16304f;
+  --color-contraste-2: #1d3c62;
+  --color-sobre-contraste: #eaf2fa;
+  --color-noite: #e8eff6;
+  --color-noite-2: #cfdcea;
+  --color-concreto: #a6b8cc;
+  --color-concreto-claro: #7c8ea3;
+  --color-marca: #f2a81d;
+  --color-marca-escura: #f5bc4a;
+  --color-acento: #35c2e3;
+  --color-vidro: #c2d4e6;
+  --color-oxido: #e08a5f;
+  --color-oxido-escuro: #e08a5f;
+  --color-oxido-claro: #e08a5f;
+
+  /* Raio contido: o site não é "card arredondado", mas também não é
+     o layout-jornal de zero raio. */
+  --radius-xs: 2px;
+  --radius-sm: 3px;
+  --radius-md: 5px;
+  --radius-lg: 8px;
+
+  /* Duas curvas. `obra` é a antiga, para o traço da elevação.
+     `expo` é a de saída forte usada em toda revelação e hover — é ela
+     que dá a sensação de peso desacelerando, e não de coisa deslizando. */
+  --ease-obra: cubic-bezier(0.2, 0.65, 0.3, 1);
+  --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* Largura da coluna da "cota" (elemento assinatura). */
+  --espaco-cota: 4.5rem;
+  --espaco-cota-mobile: 1.5rem;
+}
+
+@theme inline {
+  --font-sans: var(--font-corpo), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-display-face), var(--font-corpo), sans-serif;
+  --font-mono: var(--font-tecnica), ui-monospace, monospace;
+}
+
+@layer base {
+  /* ----------------------------------------------------------------
+     TEMA ESCURO — padrão. As cores vêm da logo.
+     ---------------------------------------------------------------- */
+  :root[data-tema="escuro"] {
+    --color-cal: #0a1826;
+    --color-cal-2: #0f2236;
+    --color-contraste: #16304f;
+    --color-contraste-2: #1d3c62;
+    --color-sobre-contraste: #eaf2fa;
+    --color-noite: #e8eff6;
+    --color-noite-2: #cfdcea;
+    --color-concreto: #a6b8cc;
+    --color-concreto-claro: #7c8ea3;
+    --color-marca: #f2a81d;
+    --color-marca-escura: #f5bc4a;
+    --color-acento: #35c2e3;
+    --color-vidro: #c2d4e6;
+    --color-oxido: #e08a5f;
+    --color-oxido-escuro: #e08a5f;
+    --color-oxido-claro: #e08a5f;
+
+    /* Sobre marinho, o âmbar tem folga de contraste e é a cor da marca —
+       serve de anel de foco em qualquer superfície do tema escuro. */
+    --cor-foco: var(--color-marca);
+    --cor-pendente: #e8a077;
+    --borda-pendente: color-mix(in srgb, #e8a077 55%, transparent);
+    --fundo-pendente: color-mix(in srgb, #e8a077 12%, transparent);
+
+    color-scheme: dark;
+  }
+
+  /* ----------------------------------------------------------------
+     TEMA CLARO — o caderno de obra original.
+     ---------------------------------------------------------------- */
+  :root[data-tema="claro"] {
+    --color-cal: #e9eae7;
+    --color-cal-2: #f3f4f1;
+    --color-contraste: #16212e;
+    --color-contraste-2: #1f2e3f;
+    --color-sobre-contraste: #e9eae7;
+    --color-noite: #16212e;
+    --color-noite-2: #1f2e3f;
+    /* concreto foi escurecido de #6C7278 para #5A6067: no #6C7278 o
+       contraste sobre `cal` dava 4.03:1, abaixo do AA para texto normal. */
+    --color-concreto: #5a6067;
+    --color-concreto-claro: #9aa0a5;
+    --color-marca: #f2b705;
+    --color-marca-escura: #c99404;
+    /* No claro o ciano não entra: o acento cai para o amarelo legível,
+       para não inventar uma cor que a marca não tem em fundo claro. */
+    --color-acento: #c99404;
+    --color-vidro: #c6d0d4;
+    --color-oxido: #9e4e2c;
+    --color-oxido-escuro: #8e4526;
+    --color-oxido-claro: #e08a5f;
+
+    /* O amarelo não alcança 3:1 sobre `cal`, então em fundo claro o anel
+       de foco é `noite`; nas seções de contraste, `marca`. */
+    --cor-foco: var(--color-noite);
+    /* Duas variantes do óxido para o marcador de pendência, que precisa
+       passar em AA nas duas superfícies:
+       - clara: o #9E4E2C sobre o próprio tingimento do marcador dava
+         4.35:1, logo abaixo do mínimo. O #8E4526 dá 5.3:1.
+       - escura: o #9E4E2C sobre `noite` dava 2.78:1. O #E08A5F dá 6.2:1. */
+    --cor-pendente: var(--color-oxido-escuro);
+    --borda-pendente: color-mix(in srgb, var(--color-oxido-escuro) 60%, transparent);
+    --fundo-pendente: color-mix(in srgb, var(--color-oxido-escuro) 6%, transparent);
+
+    color-scheme: light;
+  }
+
+  /* Só no tema claro a superfície de contraste inverte de verdade e
+     precisa trocar anel de foco e marcador. No escuro tudo já é escuro. */
+  :root[data-tema="claro"] .superficie-escura {
+    --cor-foco: var(--color-marca);
+    --cor-pendente: var(--color-oxido-claro);
+    --borda-pendente: color-mix(in srgb, var(--color-oxido-claro) 55%, transparent);
+    --fundo-pendente: color-mix(in srgb, var(--color-oxido-claro) 12%, transparent);
+  }
+
+  /* Ilha clara dentro de uma seção de contraste — o formulário usa isto
+     para que rótulo, dica e anel de foco voltem aos tons da superfície. */
+  :root[data-tema="claro"] .superficie-clara {
+    --cor-foco: var(--color-noite);
+    --cor-pendente: var(--color-oxido-escuro);
+    --borda-pendente: color-mix(in srgb, var(--color-oxido-escuro) 60%, transparent);
+    --fundo-pendente: color-mix(in srgb, var(--color-oxido-escuro) 6%, transparent);
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+    /* Compensa o header fixo quando se navega por âncora. */
+    scroll-padding-top: 5rem;
+  }
+
+  body {
+    background-color: var(--color-cal);
+    color: var(--color-noite);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* A troca de tema é instantânea de propósito: uma transição de cor em
+     página inteira custa caro e pisca. Só as superfícies grandes
+     acompanham, e de leve. */
+  body,
+  .transicao-tema {
+    transition:
+      background-color 0.25s var(--ease-obra),
+      border-color 0.25s var(--ease-obra);
+  }
+
+  ::selection {
+    background-color: var(--color-marca);
+    color: #16212e;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--cor-foco);
+    outline-offset: 3px;
+    border-radius: var(--radius-xs);
+  }
+
+  /* Números são cidadãos de primeira classe neste site. */
+  .tabular {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum" 1;
+  }
+}
+
+@layer components {
+  /* Etiqueta técnica: usada em labels de seção, legendas e unidades. */
+  .etiqueta {
+    font-family: var(--font-mono);
+    /* 12px, não 11px. Abaixo de 12px o texto deixa de ser confortável no
+       celular — e a etiqueta carrega informação de verdade aqui (cotas,
+       unidades, rótulos de seção), não é enfeite. */
+    font-size: 0.75rem;
+    line-height: 1;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Título de display. O tracking apertado é o que dá a cara de
+     sinalização de obra; sem isso vira "site corporativo". */
+  .titulo {
+    font-family: var(--font-display);
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    line-height: 1.02;
+    text-transform: uppercase;
+    text-wrap: balance;
+  }
+
+  /* A medida é em `rem`, não em `ch`. O `ch` depende da largura do
+     glifo "0" da fonte carregada: enquanto a fonte de fallback está em
+     uso, a caixa tem uma largura; quando a real chega, tem outra, o
+     texto reflui e tudo abaixo dele pula. Foi a causa de 0.12 de CLS
+     medido na home. */
+  .prosa {
+    max-width: 34rem;
+    text-wrap: pretty;
+  }
+
+  /* Marcador de informação que o cliente ainda não forneceu. */
+  .pendente {
+    color: var(--cor-pendente);
+    background-color: var(--fundo-pendente);
+    border: 1px dashed var(--borda-pendente);
+  }
+
+  /* Traço da elevação do hero. `pathLength="1"` normaliza qualquer path
+     para comprimento 1, então o mesmo dasharray serve para todos.
+     Roda uma vez e para em `forwards`; com movimento reduzido a regra
+     global zera a duração e o desenho simplesmente já está pronto. */
+  .traco {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    animation: desenhar-traco 1.4s var(--ease-obra) forwards;
+  }
+
+  /* ----------------------------------------------------------------
+     MOVIMENTO
+
+     Toda revelação parte de 14px abaixo e 0 de opacidade, com a curva
+     `expo`: sobe rápido e assenta devagar, como peso baixando. O atraso
+     em cascata vem de `--atraso`, posto pelo componente.
+
+     O estado escondido está atrás de `html.js`: se o JavaScript não
+     rodar, a classe nunca é aplicada e o conteúdo simplesmente aparece.
+     Conteúdo invisível por falha de script seria pior que não animar.
+     ---------------------------------------------------------------- */
+  .js .revelar {
+    opacity: 0;
+    transform: translateY(14px);
+    transition:
+      opacity 0.7s var(--ease-expo),
+      transform 0.7s var(--ease-expo);
+    transition-delay: var(--atraso, 0ms);
+  }
+
+  .js .revelar[data-visivel="sim"] {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* ACIMA DA DOBRA a entrada é por animação CSS no carregamento, não por
+     IntersectionObserver. Duas razões: o observador só dispara depois da
+     hidratação, o que atrasaria conteúdo que já está na tela; e nada
+     aqui pode depender de JavaScript para aparecer. */
+  .js .entrar {
+    animation: entrar 0.7s var(--ease-expo) both;
+    animation-delay: var(--atraso, 0ms);
+  }
+
+  /* Palavra a palavra, só no título do hero.
+     Anima SÓ o transform — a opacidade fica em 1 de propósito.
+     Este h1 é o elemento de LCP da home: enquanto ele estiver
+     transparente, o navegador não conta a maior pintura, e animar a
+     opacidade aqui empurrou o LCP de 1,98 s para 2,72 s na medição.
+     Subindo sem desaparecer, o efeito continua e o LCP volta ao paint. */
+  .js .palavra {
+    display: inline-block;
+    animation: subir-palavra 0.6s var(--ease-expo) both;
+    animation-delay: var(--atraso, 0ms);
+  }
+
+  /* Preenchimento que sobe de baixo, no hover dos botões. O bloco é
+     retangular de propósito: é a mesma marcação da cota, não um brilho. */
+  .preenche {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+  }
+
+  .preenche::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    transform: scaleY(0);
+    transform-origin: bottom;
+    transition: transform 0.45s var(--ease-expo);
+    background-color: var(--cor-preenche, var(--color-marca));
+  }
+
+  .preenche:hover::before,
+  .preenche:focus-visible::before {
+    transform: scaleY(1);
+  }
+
+  /* Sublinhado que cresce da esquerda — a mesma gramática da cota. */
+  .sublinha {
+    position: relative;
+  }
+
+  .sublinha::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0.15em;
+    height: 2px;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.45s var(--ease-expo);
+    background-color: var(--color-marca);
+  }
+
+  .sublinha:hover::after,
+  .sublinha:focus-visible::after,
+  .sublinha[aria-current="page"]::after {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes desenhar-traco {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes entrar {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes subir-palavra {
+  from {
+    transform: translateY(0.42em);
+  }
+  to {
+    transform: none;
+  }
+}
+
+/* Toda animação do site respeita esta regra. Componentes que animam
+   também checam `prefers-reduced-motion` em JS, porque animação via
+   Motion não é alcançada por CSS.
+
+   As revelações precisam de tratamento explícito: zerar a duração não
+   basta, porque sem a classe `data-visivel` elas ficariam invisíveis
+   para sempre. Aqui elas nascem visíveis. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .js .revelar,
+  .js .entrar,
+  .js .palavra {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
