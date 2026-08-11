@@ -1,4 +1,4 @@
-import type { DadosObra } from "@/acoes/admin";
+import type { DadosObra, EstagioLead, TipoInteracao } from "@/acoes/admin";
 import { clienteSupabaseServidor } from "@/lib/supabase/servidor";
 
 /**
@@ -24,6 +24,7 @@ export interface LinhaLead {
   obra_slug: string | null;
   atendido: boolean;
   anotacoes: string | null;
+  estagio: EstagioLead;
 }
 
 export interface LinhaObraAdmin {
@@ -131,6 +132,86 @@ export async function listarLeads(filtros?: {
 
   const { data } = await consulta;
   return (data as LinhaLead[]) ?? [];
+}
+
+export interface LinhaInteracao {
+  id: string;
+  criado_em: string;
+  tipo: TipoInteracao;
+  nota: string;
+}
+
+export interface LinhaTarefa {
+  id: string;
+  lead_id: string;
+  titulo: string;
+  vencimento: string;
+  concluida: boolean;
+}
+
+/** Um lead com o nome do card, para as tarefas aparecerem no dashboard sem outra consulta. */
+export interface TarefaComLead extends LinhaTarefa {
+  lead_nome: string;
+}
+
+export async function obterLeadComHistorico(id: string): Promise<{
+  lead: LinhaLead;
+  interacoes: LinhaInteracao[];
+  tarefas: LinhaTarefa[];
+} | null> {
+  const supabase = await clienteSupabaseServidor();
+  if (!supabase) return null;
+
+  const [lead, interacoes, tarefas] = await Promise.all([
+    supabase.from("leads").select("*").eq("id", id).maybeSingle(),
+    supabase
+      .from("lead_interacoes")
+      .select("id, criado_em, tipo, nota")
+      .eq("lead_id", id)
+      .order("criado_em", { ascending: false }),
+    supabase
+      .from("lead_tarefas")
+      .select("id, lead_id, titulo, vencimento, concluida")
+      .eq("lead_id", id)
+      .order("vencimento", { ascending: true }),
+  ]);
+
+  if (!lead.data) return null;
+
+  return {
+    lead: lead.data as LinhaLead,
+    interacoes: (interacoes.data as LinhaInteracao[]) ?? [],
+    tarefas: (tarefas.data as LinhaTarefa[]) ?? [],
+  };
+}
+
+/**
+ * Tarefas não concluídas, com o nome do lead, para o aviso de
+ * "atrasadas / para hoje" no início do painel. Limitado a 50 — se
+ * passar disso, o problema não é técnico, é o Carlos não estar
+ * concluindo tarefa nenhuma.
+ */
+export async function listarTarefasPendentes(): Promise<TarefaComLead[]> {
+  const supabase = await clienteSupabaseServidor();
+  if (!supabase) return [];
+
+  const { data } = await supabase
+    .from("lead_tarefas")
+    .select("id, lead_id, titulo, vencimento, concluida, leads(nome)")
+    .eq("concluida", false)
+    .order("vencimento", { ascending: true })
+    .limit(50);
+
+  return ((data ?? []) as unknown as Array<LinhaTarefa & { leads: { nome: string } | null }>).map(
+    (t) => ({
+      id: t.id,
+      lead_id: t.lead_id,
+      titulo: t.titulo,
+      vencimento: t.vencimento,
+      concluida: t.concluida,
+      lead_nome: t.leads?.nome ?? "(contato removido)",
+    }),
+  );
 }
 
 export interface LinhaDepoimento {

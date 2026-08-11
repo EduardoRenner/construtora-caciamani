@@ -194,6 +194,108 @@ export async function marcarLeadAtendido(
 }
 
 // ---------------------------------------------------------------------
+// CRM — funil de clientes
+// ---------------------------------------------------------------------
+
+export type EstagioLead =
+  | "novo"
+  | "contatado"
+  | "orcamento_enviado"
+  | "fechado"
+  | "perdido";
+
+export async function moverEstagioLead(
+  id: string,
+  estagio: EstagioLead,
+): Promise<Resposta> {
+  const supabase = await exigirSessao();
+
+  const { error } = await supabase
+    .from("leads")
+    .update({
+      estagio,
+      // Fechado ou perdido é o fim do funil — marca como atendido junto,
+      // para não duplicar controle entre "estágio" e a lista simples de
+      // /admin/leads.
+      ...(estagio === "fechado" || estagio === "perdido" ? { atendido: true } : {}),
+    })
+    .eq("id", id);
+
+  if (error) return { ok: false, erro: error.message };
+
+  revalidatePath("/admin/clientes");
+  revalidatePath("/admin/leads");
+  revalidatePath("/admin");
+  return { ok: true };
+}
+
+export type TipoInteracao = "ligacao" | "whatsapp" | "email" | "visita" | "outro";
+
+export async function registrarInteracao(
+  leadId: string,
+  tipo: TipoInteracao,
+  nota: string,
+): Promise<Resposta> {
+  const supabase = await exigirSessao();
+
+  const { error } = await supabase
+    .from("lead_interacoes")
+    .insert({ lead_id: leadId, tipo, nota });
+
+  if (error) return { ok: false, erro: error.message };
+
+  revalidatePath(`/admin/clientes/${leadId}`);
+  return { ok: true };
+}
+
+export async function criarTarefa(
+  leadId: string,
+  titulo: string,
+  vencimento: string,
+): Promise<Resposta> {
+  const supabase = await exigirSessao();
+
+  const { error } = await supabase
+    .from("lead_tarefas")
+    .insert({ lead_id: leadId, titulo, vencimento });
+
+  if (error) return { ok: false, erro: error.message };
+
+  revalidatePath(`/admin/clientes/${leadId}`);
+  revalidatePath("/admin");
+  return { ok: true };
+}
+
+export async function concluirTarefa(
+  id: string,
+  concluida: boolean,
+  leadId: string,
+): Promise<Resposta> {
+  const supabase = await exigirSessao();
+
+  const { error } = await supabase
+    .from("lead_tarefas")
+    .update({ concluida, concluida_em: concluida ? new Date().toISOString() : null })
+    .eq("id", id);
+
+  if (error) return { ok: false, erro: error.message };
+
+  revalidatePath(`/admin/clientes/${leadId}`);
+  revalidatePath("/admin");
+  return { ok: true };
+}
+
+export async function apagarTarefa(id: string, leadId: string): Promise<Resposta> {
+  const supabase = await exigirSessao();
+  const { error } = await supabase.from("lead_tarefas").delete().eq("id", id);
+  if (error) return { ok: false, erro: error.message };
+
+  revalidatePath(`/admin/clientes/${leadId}`);
+  revalidatePath("/admin");
+  return { ok: true };
+}
+
+// ---------------------------------------------------------------------
 // Configurações
 // ---------------------------------------------------------------------
 
