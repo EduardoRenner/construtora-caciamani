@@ -174,17 +174,38 @@ dentro de uma seção escura usa `superficie-clara`.
 - **O simulador não estima quando não está calibrado.** Ele diz o que
   falta, em português, e mesmo assim abre o WhatsApp com os dados da
   obra. O lead se qualifica igual.
+- **Não tem `motion` (framer-motion) no projeto**, mesmo o briefing
+  original citando a lib. Toda animação acabou em CSS puro — foi decisão
+  de performance, não esquecimento (ver "Movimento" acima e o CLS do
+  hero). Se algum dia parecer que falta instalar, não falta.
+- **O domínio de imagem do Supabase não é hardcoded** em
+  `next.config.ts` — é extraído de `NEXT_PUBLIC_SUPABASE_URL` em tempo
+  de build. `next/image` recusa qualquer host de imagem que não esteja
+  na lista; sem isso, a primeira foto real subida pelo painel quebraria
+  em produção (só não quebrou até agora porque as fotos no ar são
+  arquivos locais).
+- **A trava de indexação (`NEXT_PUBLIC_INDEXAR`) derruba o SEO do
+  Lighthouse de propósito** quando não está definida. Se uma medição
+  local mostrar SEO baixo, primeiro confira se essa variável está
+  setada antes de desconfiar de regressão.
 
 ## Supabase
 
 1. Criar o projeto
-2. Rodar, no SQL Editor e nesta ordem:
-   `supabase/migracoes/0001_leads.sql`, depois `0002_conteudo.sql`
+2. Rodar, no SQL Editor e **nesta ordem**: `0001_leads.sql`,
+   `0002_conteudo.sql`, `0003_crm.sql`, `0004_seguranca_leads.sql`
 3. Preencher o `.env.local`
 4. Criar o usuário do Carlos em **Authentication › Users › Add user** —
    não existe cadastro aberto no site
 
-O painel fica em `/admin`.
+O painel fica em `/admin`, e inclui um CRM em `/admin/clientes`
+(funil por estágio, histórico de interação, tarefas com vencimento).
+
+Para POPULAR o funil com dados de exemplo antes de uma demonstração de
+venda, rode também `supabase/seed_demo_crm.sql` — **só num projeto
+Supabase de demonstração, nunca no que o Carlos vai usar de verdade**.
+Todo nome ali é fictício e vem marcado "Exemplo — ...". Instrução de
+limpeza no fim do próprio arquivo.
 
 ## Como medir de novo
 
