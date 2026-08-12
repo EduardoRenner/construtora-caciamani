@@ -42,6 +42,15 @@ export const empresa = {
     /** Fala em primeira pessoa — é o que fecha negócio em cidade pequena. */
     depoimento: null as string | null,
     desdeAno: null as number | null,
+    /**
+     * Foto real, fornecida pela empresa. Fica aqui e NÃO em `demo.ts`:
+     * o modo demonstração é para conteúdo fictício, e esta é a pessoa de
+     * verdade — continua no ar quando a flag for desligada.
+     */
+    foto: {
+      src: "/equipe/carlos-primo-caciamani.webp",
+      alt: "Carlos Primo Caciamani sentado à mesa do escritório da Caciamani, com a placa da construtora na parede atrás",
+    } as { src: string; alt: string } | null,
   },
   cidadeSede: "Maravilha",
   uf: "SC",

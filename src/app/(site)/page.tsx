@@ -4,6 +4,7 @@ import { CardObra } from "@/components/CardObra";
 import { ElevacaoTraco } from "@/components/ElevacaoTraco";
 import { FaixaEstatisticas } from "@/components/FaixaEstatisticas";
 import { Pendente } from "@/components/Pendente";
+import { RetratoProprietario } from "@/components/RetratoProprietario";
 import { Entrada, TituloEntrada } from "@/components/Entrada";
 import { Revelar } from "@/components/Revelar";
 import { BotaoLink } from "@/components/ui/Botao";
@@ -246,14 +247,7 @@ function OConstrutor() {
     <Secao cota="o construtor">
       <div className="grid gap-10 lg:grid-cols-[minmax(0,24rem)_minmax(0,1fr)] lg:gap-16">
         <div>
-          <div
-            aria-hidden="true"
-            className="relative aspect-3/4 w-full bg-vidro/50 bg-[repeating-linear-gradient(135deg,transparent_0_11px,rgba(90,96,103,0.13)_11px_12px)]"
-          >
-            <div className="absolute inset-x-3 bottom-3">
-              <Pendente bloco>retrato do Carlos, na obra</Pendente>
-            </div>
-          </div>
+          <RetratoProprietario />
         </div>
 
         <div>

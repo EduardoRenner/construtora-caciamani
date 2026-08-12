@@ -119,7 +119,7 @@ só, atrás de uma variável de ambiente.**
   os outros dois vêm do demo. O mesmo vale obra por obra e depoimento
   por depoimento.
 - **O que a flag NÃO preenche, nem ligada:** CNPJ, razão social, CREA,
-  responsável técnico, endereço, e-mail, retrato do Carlos e qualquer
+  responsável técnico, endereço, e-mail e qualquer
   frase em primeira pessoa atribuída a ele. Esses viram `⟨a confirmar⟩`,
   curto, em vez do `⟨PENDENTE: descrição inteira⟩`. Numa apresentação
   lêem como campo a preencher — que é o que são.
@@ -193,7 +193,7 @@ errado, a frase muda.
 | 3.3 | **Pares antes/depois** — as duas fotos precisam ter **exatamente o mesmo enquadramento e a mesma proporção**. Isso tem que ser fotografado de propósito: vale tirar a foto do terreno antes de começar toda obra nova, do mesmo ponto. | Home, /obras/[slug] |
 | 3.4 | **Dados de cada obra**: ano, área em m², prazo de execução, uma linha de resumo, descrição | /obras e cards da home |
 | 3.5 | **Depoimentos** com nome, bairro/cidade, texto do cliente e autorização de uso | Home |
-| 3.6 | **Retrato do Carlos Primo Caciamani**, ano em que começou, e uma fala dele em primeira pessoa | Home, /sobre |
+| 3.6 | ~~Retrato do Carlos Primo Caciamani~~ — **foto real recebida e publicada** (12/08/2026), em `public/equipe/`. Continua faltando: o **ano em que ele começou** (hoje vem do modo demonstração) e uma **fala dele em primeira pessoa**, que segue pendente mesmo em demo. | Home, /sobre |
 | 3.7 | **Lista nomeada das cidades atendidas** — hoje só Maravilha está confirmada | Área de atendimento, JSON-LD `areaServed` |
 | 3.8 | **E-mail de contato** e **horário de atendimento** | Contato, rodapé |
 | 3.9 | **Telefone fixo**, se houver | Contato, rodapé |
