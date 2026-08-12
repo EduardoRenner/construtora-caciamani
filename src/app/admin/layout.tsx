@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { sair } from "@/acoes/admin";
 import { Marca } from "@/components/layout/Marca";
+import { MODO_DEMO } from "@/content/demo";
 import { supabaseConfigurado } from "@/lib/supabase/publico";
 import { usuarioAtual } from "@/lib/supabase/servidor";
 
@@ -111,6 +112,24 @@ export default async function LayoutAdmin({
           </ul>
         </nav>
       </header>
+
+      {/* Sem este aviso o painel parece quebrado durante a demonstração:
+          o site mostra 8 obras e 3 depoimentos, e as telas daqui abrem
+          quase vazias. Não é bug — é o conteúdo demonstrativo vindo do
+          código, não do banco. Melhor dizer isso do que deixar o Carlos
+          descobrir sozinho no meio da apresentação. */}
+      {MODO_DEMO ? (
+        <div className="border-b border-marca/40 bg-marca/10">
+          <p className="mx-auto max-w-[80rem] px-4 py-3 text-sm text-noite md:px-8">
+            <strong className="font-semibold">Site em modo demonstração.</strong>{" "}
+            Parte do que aparece no site público — números, obras,
+            depoimentos e valores do orçamento — é conteúdo demonstrativo
+            que vem do código, não deste painel. Estas telas mostram só o
+            que está realmente gravado no banco. Ao desligar o modo demo,
+            o site passa a mostrar exatamente o que estiver aqui.
+          </p>
+        </div>
+      ) : null}
 
       <main className="mx-auto max-w-[80rem] px-4 py-10 md:px-8">{children}</main>
     </div>
