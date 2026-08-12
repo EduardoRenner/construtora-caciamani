@@ -42,6 +42,12 @@ Número plausível inventado em site de construtora é passivo legal e
 comercial. Se for preencher algo, preencha com o dado real ou não
 preencha.
 
+> **Modo demonstração.** Existe um jeito de o site aparecer preenchido
+> para uma apresentação, sem quebrar a regra acima: `NEXT_PUBLIC_MODO_DEMO`.
+> Todo o conteúdo fictício mora em **um arquivo só**, `src/content/demo.ts`,
+> e nada com efeito jurídico entra nele. Ver "Três fontes de conteúdo".
+> **Desligar antes de o site ir ao ar de verdade.**
+
 ## Como está organizado
 
 ```
@@ -58,12 +64,37 @@ src/
 supabase/migracoes/  SQL para rodar no painel do Supabase
 ```
 
-### Duas fontes de conteúdo
+### Três fontes de conteúdo
 
 `src/content/*.ts` é a **semente**. Quando o Supabase está configurado, o
 site lê do banco (`src/lib/conteudo.ts`); quando não está, ou quando a
 consulta falha, cai na semente. O site nunca fica sem conteúdo por causa
 de banco fora do ar.
+
+A terceira é o **modo demonstração** — `src/content/demo.ts`, ligado por
+`NEXT_PUBLIC_MODO_DEMO=true`. Ele entra **sempre por último**, só onde
+banco e semente deixaram buraco, e existe para apresentar o site ao
+Carlos sem seção vazia. Desligar a variável devolve o site exatamente ao
+comportamento original, sem tocar em código.
+
+| | Com a flag desligada | Com a flag ligada |
+|---|---|---|
+| Estatísticas | 4 × `⟨PENDENTE⟩` | 4 números, com "Número demonstrativo" embaixo |
+| Portfólio | só o que está no banco (ou a semente, se vazio) | banco + semente + 5 obras fictícias, sem repetir slug |
+| Depoimentos | bloco `⟨PENDENTE⟩` | 3 depoimentos, assinados por tipo de cliente, nunca por nome |
+| Cidades atendidas | Maravilha + `⟨PENDENTE⟩` | 8 municípios da região |
+| Simulador | "ainda não está calibrado" + o que falta | calcula, com aviso de que os coeficientes são fictícios |
+| Antes/depois | comparador com placeholder | seção sai do ar (par exige duas fotos do mesmo enquadramento) |
+| CNPJ, CREA, endereço, razão social, fala do Carlos | `⟨PENDENTE: descrição inteira⟩` | `⟨a confirmar⟩` — **nunca preenchidos** |
+
+A última linha é a regra, não uma exceção: dado com efeito jurídico e
+frase em primeira pessoa atribuída a pessoa real continuam pendentes com
+a flag ligada. O que muda é só o tamanho do marcador.
+
+As capas das obras demonstrativas **não são fotografias** — são desenhos
+de elevação gerados por `scripts/gerar-capas-demo.mjs`, com a palavra
+ILUSTRAÇÃO impressa no próprio desenho. Nenhuma imagem de terceiro entra
+no site.
 
 ## O sistema visual
 
@@ -188,6 +219,14 @@ dentro de uma seção escura usa `superficie-clara`.
   Lighthouse de propósito** quando não está definida. Se uma medição
   local mostrar SEO baixo, primeiro confira se essa variável está
   setada antes de desconfiar de regressão.
+- **Pedir o registro de volta num INSERT anônimo falha com erro de
+  RLS**, mesmo a política de INSERT estando certinha. `RETURNING` (o
+  `.select()` do client, ou `Prefer: return=representation` na REST API)
+  exige política de SELECT para o papel que está inserindo — e `anon`
+  só tem INSERT em `leads`, de propósito (grava, não lê a lista de
+  contatos de outra pessoa). O código do site nunca pede o registro de
+  volta depois de gravar um lead; se for testar a API manualmente e
+  usar `.select()` por hábito, é isso que vai aparecer.
 
 ## Supabase
 

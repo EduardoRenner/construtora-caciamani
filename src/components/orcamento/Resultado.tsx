@@ -6,6 +6,7 @@ import {
   etapasDoPanorama,
   type ResultadoOrcamento,
 } from "@/config/orcamento";
+import { MODO_DEMO } from "@/content/demo";
 import { linkWhatsApp } from "@/lib/site";
 import { reaisBR } from "@/lib/utils";
 
@@ -42,6 +43,16 @@ export function Resultado({
             Prazo estimado de obra: {resultado.prazoMinimoMeses} a{" "}
             {resultado.prazoMaximoMeses} meses
           </p>
+          {/* Número na tela sem dizer de onde veio é o que este projeto
+              evita desde o começo. Em demo, a faixa sai de coeficientes
+              fictícios — e isso fica escrito ao lado dela. */}
+          {MODO_DEMO ? (
+            <p className="prosa mt-4 border-l-2 border-marca/60 pl-4 text-sm text-concreto">
+              Faixa calculada com coeficientes demonstrativos, para a
+              apresentação. Não são os custos da Caciamani. A calibragem real
+              usa o CUB/SC vigente e o histórico de obras entregues.
+            </p>
+          ) : null}
         </>
       ) : (
         <>

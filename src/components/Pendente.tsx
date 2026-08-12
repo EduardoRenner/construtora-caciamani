@@ -1,3 +1,4 @@
+import { MODO_DEMO } from "@/content/demo";
 import { cn } from "@/lib/utils";
 
 /**
@@ -7,6 +8,18 @@ import { cn } from "@/lib/utils";
  * cadastral seja inventado: o que falta aparece na tela como falta.
  * Todo uso deste componente precisa ter linha correspondente no
  * PENDENCIAS.md da raiz.
+ *
+ * DOIS MODOS
+ *
+ * Normal (padrão): `⟨PENDENTE: descrição inteira⟩`, do tamanho que for
+ * preciso. É um documento de trabalho na tela, e é para incomodar.
+ *
+ * Demo (`NEXT_PUBLIC_MODO_DEMO=true`): `⟨a confirmar⟩`, curto. O que
+ * sobra em modo demo é só o que não pode ser preenchido por conteúdo
+ * demonstrativo em hipótese nenhuma — CNPJ, CREA, endereço, razão
+ * social, fala do Carlos. Numa apresentação isso lê como campo a
+ * preencher, que é exatamente o que é; a descrição inteira continua
+ * disponível para leitor de tela e para quem inspeciona a página.
  */
 export function Pendente({
   children,
@@ -19,7 +32,10 @@ export function Pendente({
   /** `true` renderiza como bloco de largura cheia, para áreas de texto. */
   bloco?: boolean;
 }) {
-  const Tag = bloco ? "div" : "span";
+  // Em modo demo nunca ocupa a largura toda: o marcador não pode ser o
+  // elemento mais pesado de uma seção durante a apresentação.
+  const comoBloco = bloco && !MODO_DEMO;
+  const Tag = comoBloco ? "div" : "span";
 
   return (
     <Tag
@@ -28,13 +44,24 @@ export function Pendente({
         // `.pendente` troca de tom conforme a superfície: o óxido escuro
         // sobre fundo `noite` dá 2.78:1 e reprovaria em AA.
         "etiqueta pendente",
-        bloco ? "block px-3 py-2.5" : "inline-block px-1.5 py-1 align-middle",
+        comoBloco
+          ? "block px-3 py-2.5"
+          : "inline-block px-1.5 py-1 align-middle",
         className,
       )}
     >
-      <span className="sr-only">Informação pendente: </span>
-      {"⟨"}PENDENTE: {children}
-      {"⟩"}
+      {MODO_DEMO ? (
+        <>
+          <span className="sr-only">Informação a confirmar: {children}. </span>
+          {"⟨"}a confirmar{"⟩"}
+        </>
+      ) : (
+        <>
+          <span className="sr-only">Informação pendente: </span>
+          {"⟨"}PENDENTE: {children}
+          {"⟩"}
+        </>
+      )}
     </Tag>
   );
 }

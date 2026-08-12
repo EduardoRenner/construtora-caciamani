@@ -6,6 +6,7 @@ import { TopoPagina } from "@/components/TopoPagina";
 import { BotaoLink } from "@/components/ui/Botao";
 import { IconeInstagram, IconeWhatsApp } from "@/components/ui/Icones";
 import { RotuloSecao, Secao, TituloSecao } from "@/components/ui/Secao";
+import { MODO_DEMO, institucional } from "@/content/demo";
 import { empresa } from "@/content/empresa";
 import { obterCidades } from "@/lib/conteudo";
 import { linkWhatsApp } from "@/lib/site";
@@ -57,21 +58,25 @@ export default async function ContatoPage() {
                 </dd>
               </div>
 
-              <div>
-                <dt className="etiqueta text-concreto">Telefone fixo</dt>
-                <dd className="mt-2.5">
-                  {telefones.fixo ? (
-                    <a
-                      href={`tel:+${apenasDigitos(telefones.fixo.internacional)}`}
-                      className="tabular inline-block py-1 text-lg transition-colors hover:text-oxido"
-                    >
-                      {telefones.fixo.exibicao}
-                    </a>
-                  ) : (
-                    <Pendente>telefone fixo, se houver</Pendente>
-                  )}
-                </dd>
-              </div>
+              {/* "Se houver" — não é pendência de verdade, então em demo
+                  a linha some em vez de virar marcador. */}
+              {telefones.fixo || !MODO_DEMO ? (
+                <div>
+                  <dt className="etiqueta text-concreto">Telefone fixo</dt>
+                  <dd className="mt-2.5">
+                    {telefones.fixo ? (
+                      <a
+                        href={`tel:+${apenasDigitos(telefones.fixo.internacional)}`}
+                        className="tabular inline-block py-1 text-lg transition-colors hover:text-oxido"
+                      >
+                        {telefones.fixo.exibicao}
+                      </a>
+                    ) : (
+                      <Pendente>telefone fixo, se houver</Pendente>
+                    )}
+                  </dd>
+                </div>
+              ) : null}
 
               <div>
                 <dt className="etiqueta text-concreto">E-mail</dt>
@@ -126,7 +131,7 @@ export default async function ContatoPage() {
               <div>
                 <dt className="etiqueta text-concreto">Horário de atendimento</dt>
                 <dd className="mt-2.5 text-lg">
-                  {empresa.horarioAtendimento ?? (
+                  {institucional.horarioAtendimento ?? (
                     <Pendente>horário de atendimento</Pendente>
                   )}
                 </dd>
@@ -153,13 +158,15 @@ export default async function ContatoPage() {
             {consultaMapa ? (
               <MapaSobDemanda consulta={consultaMapa} />
             ) : (
-              <div className="relative flex aspect-4/3 w-full items-center justify-center bg-vidro/40 bg-[repeating-linear-gradient(135deg,transparent_0_11px,rgba(90,96,103,0.13)_11px_12px)] p-6 sm:aspect-video">
-                <div className="max-w-sm">
-                  <Pendente bloco>
-                    o mapa só pode ser montado depois que o endereço do
-                    escritório for informado
-                  </Pendente>
-                </div>
+              <div className="relative flex aspect-4/3 w-full flex-col items-center justify-center gap-3 bg-vidro/40 bg-[repeating-linear-gradient(135deg,transparent_0_11px,rgba(90,96,103,0.13)_11px_12px)] p-6 text-center sm:aspect-video">
+                <p className="prosa text-sm text-concreto">
+                  O mapa entra aqui assim que o endereço do escritório for
+                  informado. Enquanto isso, o caminho é o WhatsApp.
+                </p>
+                <Pendente bloco>
+                  o mapa só pode ser montado depois que o endereço do
+                  escritório for informado
+                </Pendente>
               </div>
             )}
           </div>

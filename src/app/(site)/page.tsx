@@ -9,6 +9,7 @@ import { Revelar } from "@/components/Revelar";
 import { BotaoLink } from "@/components/ui/Botao";
 import { IconeSeta, IconeWhatsApp } from "@/components/ui/Icones";
 import { RotuloSecao, Secao, TituloSecao } from "@/components/ui/Secao";
+import { MODO_DEMO, institucional } from "@/content/demo";
 import { empresa } from "@/content/empresa";
 import { antesDepoisDestaque } from "@/content/obras";
 import { etapas } from "@/content/processo";
@@ -33,12 +34,19 @@ export default async function Home() {
     obterCidades(),
   ]);
 
+  const temParAntesDepois = Boolean(
+    antesDepoisDestaque.antes.src && antesDepoisDestaque.depois.src,
+  );
+
   return (
     <>
       <Hero />
       <FaixaEstatisticas estatisticas={estatisticas} />
       <ObrasEmDestaque obras={obrasDestaque} />
-      <AntesEDepois />
+      {/* Um par antes/depois exige duas fotos do MESMO enquadramento —
+          não dá para improvisar, nem em demo. Sem par real, a seção
+          inteira sai do ar em vez de virar um comparador vazio. */}
+      {temParAntesDepois || !MODO_DEMO ? <AntesEDepois /> : null}
       <OQueFazemos />
       <ComoFunciona />
       <OConstrutor />
@@ -131,7 +139,7 @@ function Hero() {
 
 function ObrasEmDestaque({ obras }: { obras: Obra[] }) {
   return (
-    <Secao id="obras" cota={`${obras.length} obras`}>
+    <Secao id="obras" cota={`${obras.length} obra${obras.length === 1 ? "" : "s"}`}>
       <div className="flex flex-wrap items-end justify-between gap-6">
         <div>
           <RotuloSecao>Obras</RotuloSecao>
@@ -258,10 +266,20 @@ function OConstrutor() {
                 <p>“{proprietario.depoimento}”</p>
               </blockquote>
             ) : (
-              <Pendente bloco>
-                uma fala do Carlos em primeira pessoa — por que ele construiu a
-                primeira obra, e o que ele não abre mão numa obra hoje
-              </Pendente>
+              <>
+                {/* Aspas aqui só com fala real. Em demo entra descrição da
+                    empresa em terceira pessoa — inventar frase e assinar
+                    com o nome de uma pessoa real é outra coisa. */}
+                {institucional.historia ? (
+                  <p className="prosa mb-4 text-lg text-noite md:text-xl">
+                    {institucional.historia}
+                  </p>
+                ) : null}
+                <Pendente bloco>
+                  uma fala do Carlos em primeira pessoa — por que ele construiu
+                  a primeira obra, e o que ele não abre mão numa obra hoje
+                </Pendente>
+              </>
             )}
           </div>
 
@@ -269,7 +287,7 @@ function OConstrutor() {
             <div>
               <dt className="etiqueta text-concreto">No mercado desde</dt>
               <dd className="tabular mt-2 text-2xl">
-                {proprietario.desdeAno ?? <Pendente>ano</Pendente>}
+                {institucional.desdeAno ?? <Pendente>ano</Pendente>}
               </dd>
             </div>
             <div>

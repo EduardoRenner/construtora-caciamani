@@ -1,0 +1,18 @@
+# O que NÃO sobe para a Vercel num deploy pela CLI.
+#
+# A CLI não lê o .gitignore — ela lê este arquivo. Sem ele, um
+# `vercel --prod` daqui empacotaria a pasta inteira, incluindo o
+# .env.local com a chave do Supabase e o estado local do Supabase CLI.
+# As variáveis de ambiente reais já estão configuradas no painel da
+# Vercel; nenhum arquivo de ambiente precisa viajar junto.
+
+.env
+.env.*
+!.env.example
+
+.git
+.vercel
+node_modules
+.next
+
+supabase/.temp

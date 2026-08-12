@@ -5,13 +5,26 @@ preenchido por estimativa: onde falta informação, o site mostra
 `⟨PENDENTE⟩` na tela, de propósito. Hoje são 32 marcadores na home, 17
 em `/obras`, 14 em `/sobre`, 12 em `/contato` e 11 em cada página de obra.
 
+> **Existe agora um modo demonstração** (`NEXT_PUBLIC_MODO_DEMO=true`),
+> para apresentar o site ao Carlos sem seção vazia. Ele **não resolve
+> nada desta lista** — só troca o marcador por conteúdo fictício,
+> centralizado em `src/content/demo.ts`. Com a flag ligada a home cai de
+> 32 marcadores para 6, `/obras` para 5 e `/sobre` para 10; os que
+> sobram são justamente os que conteúdo fictício não pode cobrir (itens
+> 1.1, 1.2, 1.3, 3.6, 3.8). **Tudo aqui continua valendo.** Ver seção
+> 0-B e o README.
+
 Atualizado depois de uma **auditoria técnica completa** (dev sênior:
 código, segurança, performance, acessibilidade, SEO). Ver seção 0.
 
-> **O item 1.4 virou o mais urgente da lista.** Todo o painel, a
-> gravação de leads e a edição de conteúdo dependem do Supabase estar
-> criado. Enquanto não estiver, o site funciona e converte pelo
-> WhatsApp, mas nada é gravado e nada é editável sem mexer em código.
+> **O item 1.4 foi resolvido em 12/08/2026.** O Supabase do projeto
+> "caciamani" está criado e as 4 migrações rodaram — confirmadas linha
+> por linha, não só "sem erro": tabelas, RLS, o gatilho de segurança e
+> até um insert de teste real (com tentativa de forjar campo, barrada
+> pelo gatilho — depois apagado). `.env.local` e as variáveis da Vercel
+> já estão configuradas. Falta só **criar o login do Carlos** — ver 1.4b,
+> é a única coisa que ninguém além de um humano no painel do Supabase
+> pode fazer.
 
 ---
 
@@ -88,6 +101,66 @@ propósito. O que mudou foi correção de bug, segurança e organização.
 
 **Encontrado, registrado, não corrigido agora** — ver itens 6.5 a 6.7.
 
+## 0-B. Modo demonstração — o que foi feito e por quê
+
+O site precisava ser apresentável ao Carlos antes de a empresa fornecer
+os dados. Isso colide de frente com a regra do projeto, então a saída
+foi não misturar as duas coisas: **uma camada demo separada, num arquivo
+só, atrás de uma variável de ambiente.**
+
+- **`src/content/demo.ts`** — tudo o que é fictício mora aqui: os quatro
+  números da faixa de prova, 5 obras, 3 depoimentos, 8 cidades, o
+  horário de atendimento, o ano de início, um texto institucional em
+  terceira pessoa e a tabela de coeficientes do orçamento. Nenhum desses
+  textos está espalhado pelo código — trocar pelo real é editar um
+  arquivo e apagar a variável.
+- **A ordem nunca inverte.** Banco → semente → demo. Se o Carlos salvar
+  dois dos quatro números no painel, esses dois continuam valendo e só
+  os outros dois vêm do demo. O mesmo vale obra por obra e depoimento
+  por depoimento.
+- **O que a flag NÃO preenche, nem ligada:** CNPJ, razão social, CREA,
+  responsável técnico, endereço, e-mail, retrato do Carlos e qualquer
+  frase em primeira pessoa atribuída a ele. Esses viram `⟨a confirmar⟩`,
+  curto, em vez do `⟨PENDENTE: descrição inteira⟩`. Numa apresentação
+  lêem como campo a preencher — que é o que são.
+- **As capas das obras demonstrativas são desenhos, não fotos.**
+  `scripts/gerar-capas-demo.mjs` gera cinco elevações técnicas em
+  `public/obras/demo/`, no mesmo traço do hero, com "ILUSTRAÇÃO · OBRA
+  DEMONSTRATIVA" impresso dentro da imagem. Banco de imagem atribuiria a
+  terceiros uma obra da Caciamani, que é o oposto do que este documento
+  defende.
+- **Antes/depois sai do ar em modo demo.** O par exige duas fotos com o
+  mesmo enquadramento (item 3.3) — não dá para improvisar, então a seção
+  some em vez de virar comparador vazio.
+- **O simulador passa a calcular**, com coeficientes fictícios e um
+  aviso ao lado da faixa dizendo exatamente isso. Item 4 continua aberto.
+- **O rodapé anuncia o modo demo** numa linha discreta, para ninguém
+  sair da apresentação achando que os números são da empresa.
+
+**Como desligar:** apagar `NEXT_PUBLIC_MODO_DEMO` do `.env.local` e da
+Vercel. O site volta ao comportamento original sem nenhuma mudança de
+código.
+
+### Banco, durante a demonstração
+
+- **Dados de exemplo do CRM aplicados** no projeto `caciamani`
+  (`supabase/seed_demo_crm.sql`): 6 leads cobrindo os cinco estágios do
+  funil, 5 interações e 5 tarefas. Todo nome vem prefixado
+  `Exemplo — `. Contraria a instrução original do próprio arquivo (que
+  pedia um projeto Supabase separado) — foi decisão consciente do dono
+  do projeto, para o painel não abrir zerado na apresentação.
+  **Limpar depois com:**
+
+  ```sql
+  delete from public.leads where nome like 'Exemplo — %';
+  ```
+
+- **"Casa bimba" foi despublicada, não apagada** (`publicada = false`).
+  Era o registro de teste do primeiro cadastro pelo painel e aparecia
+  como primeiro card do portfólio, com uma captura de tela por capa.
+  Continua no banco e visível em `/admin/obras` como rascunho; um clique
+  republica.
+
 ## 1. Bloqueiam o site de ir ao ar
 
 | # | O que falta | Por que é bloqueante | Onde aparece |
@@ -95,7 +168,8 @@ propósito. O que mudou foi correção de bug, segurança e organização.
 | 1.1 | **CNPJ e razão social** | Rodapé de site de construtora sem CNPJ é problema de conformidade. Não pode ser inventado. | Rodapé, JSON-LD |
 | 1.2 | **CREA e nome do responsável técnico** | Exigência do CONFEA/CREA para divulgação de serviços de engenharia. | Rodapé |
 | 1.3 | **Endereço do escritório** (rua, bairro, CEP) | Alimenta o `LocalBusiness` do Google e a página de contato. Sem ele o SEO local perde muito. | Contato, rodapé, JSON-LD |
-| 1.4 | **Criar o projeto no Supabase**, rodar as migrações em `supabase/migracoes/` **nesta ordem** (0001 → 0002 → 0003 → 0004) e preencher `.env.local` com a URL e a chave anônima | Sem isso os formulários funcionam e mandam para o WhatsApp, mas **o lead não é gravado** — quem desistir no meio se perde. Hoje o site avisa isso na tela, em desenvolvimento. | Simulador, contato, páginas de obra, CRM |
+| 1.4 | ~~Criar o projeto no Supabase, rodar as migrações, preencher `.env.local`~~ — **feito em 12/08/2026.** Projeto `caciamani` (`dlrfheafvjjcckwnzunh`), as 4 migrações aplicadas e verificadas, `.env.local` e as 3 variáveis da Vercel (produção, preview, dev) configuradas. | — | — |
+| 1.4b | **Criar o login do Carlos**: no painel do Supabase, **Authentication › Users › Add user** — e-mail e senha à mão. Não existe cadastro aberto no site, e criar conta/senha não é algo que se automatiza por API — precisa ser um humano com acesso ao painel do Supabase. | Sem isso, ninguém consegue entrar em `/admin` — o painel já funciona (confirmei: `/admin` redireciona pro login corretamente), só falta a credencial de quem vai usar. | Login do painel |
 | 1.5 | **Logo em vetor** (`.svg`, `.ai`, `.pdf` ou PNG grande com fundo transparente) | Hoje só existe em raster, do Instagram. Sem vetor não dá para gerar favicon nítido, imagem Open Graph nem a versão monocromática para fundo escuro. O site usa um wordmark provisório em tipo — **não** um monograma inventado. | Header, rodapé, favicon, OG |
 
 ## 2. Precisam da conferência do Carlos
@@ -182,6 +256,12 @@ A razão entre os dois é o fator.
 - **CRM (funil de clientes)** — adicionado depois da fase 8, revertendo a decisão da fase 6. Lá, "CRM com funil e estágios" tinha ficado marcado como "não vale a complexidade", com o argumento de que o Carlos ia continuar usando o WhatsApp e um meio-CRM só criaria um segundo lugar pra esquecer as coisas. O motivo mudou: não é para o Carlos usar todo dia, é para o painel ficar mais convincente **na hora de vender o serviço** — então o argumento original não se aplica mais. Entrou completo: `/admin/clientes` (quadro em colunas: Novo → Contatado → Orçamento enviado → Fechado/Perdido, com arrastar-e-soltar e um `<select>` acessível fazendo a mesma função) e `/admin/clientes/[id]` (histórico de interação com data, tarefas com vencimento). O início do painel ganhou um aviso de tarefas atrasadas/do dia. Migração em `supabase/migracoes/0003_crm.sql`.
   - **Dados de exemplo, para a demonstração**: `supabase/seed_demo_crm.sql`, com nomes claramente marcados "Exemplo — ...". Só para rodar num Supabase de demonstração, nunca no banco que o Carlos vai usar de verdade — o resto deste documento existe justamente para nenhum dado inventado chegar perto do que é real. Tem instrução de limpeza no fim do próprio arquivo.
   - Achado no caminho: `vencimento` é uma coluna `date` do Postgres ("AAAA-MM-DD", sem hora). Formatar isso com `new Date(...)` ou comparar com `toISOString()` interpreta a data como meia-noite UTC — no fuso do Brasil (UTC-3), à noite isso já mostra o dia seguinte. Uma tarefa "para hoje" apareceria como não vencida ainda, ou vencida um dia antes da hora. Corrigido montando a data a partir das partes, sem passar por UTC. Provado isoladamente simulando 23h no fuso de São Paulo.
+- **Supabase configurado e verificado, em produção** (12/08/2026). Projeto `caciamani` (ref `dlrfheafvjjcckwnzunh`), as 4 migrações aplicadas via `supabase db query --linked -f ...` (o CLI já estava autenticado nesta máquina). Verificação foi além de "rodou sem erro":
+  - Confirmado por consulta direta: as 8 tabelas existem com RLS ligado, os 2 gatilhos existem, a coluna `estagio` tem o valor padrão certo, o bucket `obras` existe e é público.
+  - **Testado o caminho real de ponta a ponta**: um POST HTTP contra a API do Supabase, com a chave anônima, exatamente como o site faz. Confirmou 201 e a linha apareceu no banco. Uma segunda tentativa, forjando `atendido=true` e `estagio='fechado'` no corpo da requisição, confirmou que o gatilho da 0004 reseta os dois campos — a brecha de segurança fechada nesta auditoria funciona de verdade, não só no papel. As duas linhas de teste foram apagadas depois.
+  - **Achado no caminho, sem ser bug**: pedir o registro de volta no insert (`Prefer: return=representation` / `.select()` no client JS) falha com "row-level security policy" para a chave anônima — porque `RETURNING` exige política de SELECT, e `anon` só tem política de INSERT em `leads` (de propósito: grava, não lê). O código real (`acoes/leads.ts`) nunca pede o registro de volta, então nunca foi afetado; documentado aqui para não confundir alguém testando a API manualmente no futuro.
+  - `.env.local` criado (fora do git) e as 3 variáveis (produção/preview/dev) configuradas na Vercel, com novo deploy publicado.
+  - Falta só criar o login do Carlos — ver 1.4b, é passo manual no painel do Supabase.
 - **WhatsApp do site**: confirmado o **(49) 99192-7673**. O (11) 99654-7673, que também aparecia no material público, não entra.
 - Paleta, tipografia e o elemento assinatura ("a cota") — aprovados na fase 1.
 - **Lighthouse no celular, contra o build de produção**, em 8 páginas:

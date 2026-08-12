@@ -1,7 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
+import { Fragment } from "react";
 import { Pendente } from "@/components/Pendente";
 import { IconeSeta } from "@/components/ui/Icones";
+import { MODO_DEMO } from "@/content/demo";
 import { rotulosTipoObra, type Obra } from "@/content/tipos";
 import { numeroBR } from "@/lib/utils";
 
@@ -57,45 +59,13 @@ export function CardObra({
         </Titulo>
       </Link>
 
-      {/* A linha de dados é a "cota" do card: sempre número real ou pendência. */}
-      <dl className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm">
-        <div className="flex items-center gap-1.5">
-          <dt className="sr-only">Cidade</dt>
-          <dd className="tabular text-concreto">
-            {obra.cidade}/{obra.uf}
-          </dd>
-        </div>
+      <FichaDoCard obra={obra} />
 
-        <span aria-hidden="true" className="text-concreto-claro">
-          ·
-        </span>
-
-        <div className="flex items-center gap-1.5">
-          <dt className="sr-only">Área construída</dt>
-          <dd className="tabular text-concreto">
-            {obra.areaM2 ? `${numeroBR(obra.areaM2)} m²` : <Pendente>m²</Pendente>}
-          </dd>
-        </div>
-
-        <span aria-hidden="true" className="text-concreto-claro">
-          ·
-        </span>
-
-        <div className="flex items-center gap-1.5">
-          <dt className="sr-only">Prazo de execução</dt>
-          <dd className="tabular text-concreto">
-            {obra.prazoMeses ? (
-              `${obra.prazoMeses} meses`
-            ) : (
-              <Pendente>prazo</Pendente>
-            )}
-          </dd>
-        </div>
-      </dl>
-
-      <p className="mt-3 text-sm text-concreto">
-        {obra.resumo ?? <Pendente>uma linha sobre esta obra</Pendente>}
-      </p>
+      {obra.resumo || !MODO_DEMO ? (
+        <p className="mt-3 text-sm text-concreto">
+          {obra.resumo ?? <Pendente>uma linha sobre esta obra</Pendente>}
+        </p>
+      ) : null}
 
       <Link
         href={`/obras/${obra.slug}`}
@@ -107,5 +77,56 @@ export function CardObra({
         <IconeSeta className="size-3.5 transition-transform duration-300 ease-obra group-hover:translate-x-1" />
       </Link>
     </article>
+  );
+}
+
+/**
+ * A linha de dados é a "cota" do card: sempre número real ou pendência.
+ *
+ * Em modo demo o que falta simplesmente não entra na linha, em vez de
+ * virar marcador. As obras reais da Caciamani ainda não têm metragem nem
+ * prazo informados, e três marcadores lado a lado no card fazem parecer
+ * que a obra tem problema — quando o que falta é o dado. A cidade é
+ * sempre conhecida, então a linha nunca fica vazia.
+ */
+function FichaDoCard({ obra }: { obra: Obra }) {
+  const itens: Array<{ rotulo: string; valor: React.ReactNode }> = [
+    { rotulo: "Cidade", valor: `${obra.cidade}/${obra.uf}` },
+  ];
+
+  if (obra.areaM2) {
+    itens.push({
+      rotulo: "Área construída",
+      valor: `${numeroBR(obra.areaM2)} m²`,
+    });
+  } else if (!MODO_DEMO) {
+    itens.push({ rotulo: "Área construída", valor: <Pendente>m²</Pendente> });
+  }
+
+  if (obra.prazoMeses) {
+    itens.push({
+      rotulo: "Prazo de execução",
+      valor: `${obra.prazoMeses} meses`,
+    });
+  } else if (!MODO_DEMO) {
+    itens.push({ rotulo: "Prazo de execução", valor: <Pendente>prazo</Pendente> });
+  }
+
+  return (
+    <dl className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm">
+      {itens.map((item, indice) => (
+        <Fragment key={item.rotulo}>
+          {indice > 0 ? (
+            <span aria-hidden="true" className="text-concreto-claro">
+              ·
+            </span>
+          ) : null}
+          <div className="flex items-center gap-1.5">
+            <dt className="sr-only">{item.rotulo}</dt>
+            <dd className="tabular text-concreto">{item.valor}</dd>
+          </div>
+        </Fragment>
+      ))}
+    </dl>
   );
 }

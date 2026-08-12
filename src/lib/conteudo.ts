@@ -5,6 +5,14 @@ import {
   type Estatistica,
 } from "@/content/empresa";
 import { depoimentosPublicaveis as depoimentosSemente } from "@/content/depoimentos";
+import {
+  MODO_DEMO,
+  cidadesDemo,
+  coeficientesDemo,
+  depoimentosDemo,
+  estatisticasDemo,
+  obrasDemo,
+} from "@/content/demo";
 import { obrasPublicadas as obrasSemente } from "@/content/obras";
 import type { Depoimento, Obra, TipoObra } from "@/content/tipos";
 import { clienteSupabase } from "@/lib/supabase/publico";
@@ -16,6 +24,11 @@ import { clienteSupabase } from "@/lib/supabase/publico";
  * consulta falhar, cai no conteúdo de `src/content/*.ts`. O site nunca
  * fica no ar sem conteúdo por causa de banco fora do ar — no pior caso
  * ele mostra a semente, que é exatamente o que mostra hoje.
+ *
+ * Com `NEXT_PUBLIC_MODO_DEMO=true` entra um terceiro nível, sempre por
+ * último: o conteúdo demonstrativo de `src/content/demo.ts`. Ele nunca
+ * substitui dado real — só preenche o buraco que banco e semente
+ * deixaram. Desligar a flag devolve o site ao comportamento original.
  */
 
 interface LinhaObra {
@@ -83,9 +96,9 @@ function paraObra(linha: LinhaObra): Obra {
 const SELECAO_OBRA =
   "*, obra_fotos(url, alt, ordem), obra_antes_depois(antes_url, antes_alt, depois_url, depois_alt, legenda, prazo, ano, ordem)";
 
-export async function obterObras(): Promise<Obra[]> {
+async function obrasDoBanco(): Promise<Obra[]> {
   const supabase = clienteSupabase();
-  if (!supabase) return obrasSemente;
+  if (!supabase) return [];
 
   const { data, error } = await supabase
     .from("obras")
@@ -95,18 +108,59 @@ export async function obterObras(): Promise<Obra[]> {
 
   if (error || !data) {
     console.error("[conteudo] Falha ao ler obras:", error?.message);
-    return obrasSemente;
+    return [];
   }
-
-  // Banco vazio (ainda não migraram o conteúdo): mostra a semente em vez
-  // de uma página de obras em branco.
-  if (data.length === 0) return obrasSemente;
 
   return (data as unknown as LinhaObra[]).map(paraObra);
 }
 
+/** Junta as listas na ordem dada; o primeiro slug que aparece vence. */
+function mesclarPorSlug(...listas: Obra[][]): Obra[] {
+  const vistos = new Set<string>();
+  const saida: Obra[] = [];
+
+  for (const lista of listas) {
+    for (const obra of lista) {
+      if (vistos.has(obra.slug)) continue;
+      vistos.add(obra.slug);
+      saida.push(obra);
+    }
+  }
+
+  return saida;
+}
+
+export async function obterObras(): Promise<Obra[]> {
+  const doBanco = await obrasDoBanco();
+
+  // Comportamento original: o banco manda; a semente só cobre banco
+  // vazio (ou fora do ar), para a página de obras nunca ficar em branco.
+  if (!MODO_DEMO) return doBanco.length > 0 ? doBanco : obrasSemente;
+
+  // Em demo o portfólio é a soma dos três, sem repetir slug: primeiro o
+  // que o Carlos cadastrou, depois as obras reais da semente, e só então
+  // as demonstrativas. Obra sem foto vai para o fim — a listagem tem que
+  // abrir com imagem.
+  const todas = mesclarPorSlug(doBanco, obrasSemente, obrasDemo);
+  return [
+    ...todas.filter((obra) => obra.capa.src),
+    ...todas.filter((obra) => !obra.capa.src),
+  ];
+}
+
+/**
+ * Destaques da home. No máximo 6 — duas fileiras cheias, sem card órfão
+ * na terceira. Em demo, obra sem foto fica de fora: na home a grade de
+ * obras é a prova visual, e um retângulo hachurado no meio dela derruba
+ * o efeito. A obra continua aparecendo em `/obras`, com a pendência.
+ */
 export async function obterObrasDestaque(): Promise<Obra[]> {
-  return (await obterObras()).filter((obra) => obra.destaque);
+  const destaques = (await obterObras()).filter((obra) => obra.destaque);
+  const visiveis = MODO_DEMO
+    ? destaques.filter((obra) => obra.capa.src)
+    : destaques;
+
+  return visiveis.slice(0, 6);
 }
 
 export async function obterObra(slug: string): Promise<Obra | undefined> {
@@ -115,17 +169,37 @@ export async function obterObra(slug: string): Promise<Obra | undefined> {
 
 export async function obterEstatisticas(): Promise<Estatistica[]> {
   const valor = await obterConfiguracao<Estatistica[]>("estatisticas");
-  return valor ?? estatisticasSemente;
+  const atuais = valor ?? estatisticasSemente;
+
+  // Demo preenche indicador por indicador: se o Carlos já salvou dois
+  // números no painel, esses dois continuam valendo.
+  if (!MODO_DEMO) return atuais;
+
+  return atuais.map((estatistica) => {
+    if (estatistica.valor !== null) return estatistica;
+    const demo = estatisticasDemo.find((d) => d.rotulo === estatistica.rotulo);
+    return demo ?? estatistica;
+  });
 }
 
 export async function obterCidades(): Promise<string[]> {
   const valor = await obterConfiguracao<string[]>("cidades");
-  return valor && valor.length > 0 ? valor : cidadesSemente;
+  if (valor && valor.length > 0) return valor;
+  // A semente tem só Maravilha, que é a única cidade confirmada — em
+  // demo isso deixaria a seção de atendimento com uma etiqueta só.
+  if (MODO_DEMO && cidadesSemente.length <= 1) return cidadesDemo;
+  return cidadesSemente;
+}
+
+/** Depoimento real publicado sempre vence; o demo só cobre lista vazia. */
+function comDepoimentosDemo(depoimentos: Depoimento[]): Depoimento[] {
+  if (depoimentos.length > 0) return depoimentos;
+  return MODO_DEMO ? depoimentosDemo : depoimentos;
 }
 
 export async function obterDepoimentos(): Promise<Depoimento[]> {
   const supabase = clienteSupabase();
-  if (!supabase) return depoimentosSemente;
+  if (!supabase) return comDepoimentosDemo(depoimentosSemente);
 
   const { data, error } = await supabase
     .from("depoimentos")
@@ -134,7 +208,9 @@ export async function obterDepoimentos(): Promise<Depoimento[]> {
     .eq("autorizado", true)
     .order("ordem", { ascending: true });
 
-  if (error || !data) return depoimentosSemente;
+  if (error || !data || data.length === 0) {
+    return comDepoimentosDemo(depoimentosSemente);
+  }
 
   return data.map((linha) => ({
     nome: linha.nome,
@@ -149,17 +225,22 @@ export async function obterDepoimentos(): Promise<Depoimento[]> {
 }
 
 export async function obterCoeficientes(): Promise<Coeficientes> {
+  // Em demo a base é a tabela fictícia, para o simulador calcular durante
+  // a apresentação em vez de listar o que falta. O que o Carlos salvar no
+  // painel continua sobrescrevendo, chave por chave.
+  const base = MODO_DEMO ? coeficientesDemo : coeficientesPadrao;
+
   const valor = await obterConfiguracao<Coeficientes>("orcamento");
-  if (!valor) return coeficientesPadrao;
+  if (!valor) return base;
 
   // Mescla com o padrão para que uma chave nova no código não quebre um
   // registro salvo antes de ela existir.
   return {
-    ...coeficientesPadrao,
+    ...base,
     ...valor,
-    fatoresTipo: { ...coeficientesPadrao.fatoresTipo, ...valor.fatoresTipo },
-    fatoresPadrao: { ...coeficientesPadrao.fatoresPadrao, ...valor.fatoresPadrao },
-    prazos: { ...coeficientesPadrao.prazos, ...valor.prazos },
+    fatoresTipo: { ...base.fatoresTipo, ...valor.fatoresTipo },
+    fatoresPadrao: { ...base.fatoresPadrao, ...valor.fatoresPadrao },
+    prazos: { ...base.prazos, ...valor.prazos },
   };
 }
 

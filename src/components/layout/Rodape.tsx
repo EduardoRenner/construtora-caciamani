@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Marca } from "./Marca";
 import { Pendente } from "@/components/Pendente";
 import { IconeInstagram, IconeWhatsApp } from "@/components/ui/Icones";
+import { AVISO_DEMO, MODO_DEMO, institucional } from "@/content/demo";
 import { empresa } from "@/content/empresa";
 import { linkWhatsApp, mensagemPadraoWhatsApp, navegacao } from "@/lib/site";
 
@@ -99,7 +100,7 @@ export function Rodape() {
                 )}
               </li>
               <li className="text-vidro/75">
-                {empresa.horarioAtendimento ?? (
+                {institucional.horarioAtendimento ?? (
                   <Pendente>horário de atendimento</Pendente>
                 )}
               </li>
@@ -124,6 +125,15 @@ export function Rodape() {
             </span>
           </p>
         </div>
+
+        {/* Em modo demo o site tem que dizer que é demo. Discreto, mas
+            escrito: quem vê a apresentação precisa saber quais números
+            já são da empresa e quais ainda são de exemplo. */}
+        {MODO_DEMO ? (
+          <p className="mt-6 border-l-2 border-marca/60 pl-4 text-xs text-vidro/75">
+            {AVISO_DEMO}
+          </p>
+        ) : null}
       </div>
     </footer>
   );
