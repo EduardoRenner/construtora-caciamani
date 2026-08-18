@@ -88,7 +88,7 @@ export function FormularioObra({ obra }: { obra?: DadosObra & { id: string } }) 
   const [erro, setErro] = useState<string | null>(null);
   const [salvo, setSalvo] = useState(false);
 
-  /** Enquanto o Carlos não editar o endereço à mão, ele segue o título. */
+  /** Enquanto o Carlinhos não editar o endereço à mão, ele segue o título. */
   function mudarTitulo(novo: string) {
     setTitulo(novo);
     if (!enderecoTocado) setEndereco(paraEndereco(novo));

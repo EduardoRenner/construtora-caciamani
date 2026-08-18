@@ -138,7 +138,7 @@ export async function obterObras(): Promise<Obra[]> {
   if (!MODO_DEMO) return doBanco.length > 0 ? doBanco : obrasSemente;
 
   // Em demo o portfólio é a soma dos três, sem repetir slug: primeiro o
-  // que o Carlos cadastrou, depois as obras reais da semente, e só então
+  // que o Carlinhos cadastrou, depois as obras reais da semente, e só então
   // as demonstrativas. Obra sem foto vai para o fim — a listagem tem que
   // abrir com imagem.
   const todas = mesclarPorSlug(doBanco, obrasSemente, obrasDemo);
@@ -171,7 +171,7 @@ export async function obterEstatisticas(): Promise<Estatistica[]> {
   const valor = await obterConfiguracao<Estatistica[]>("estatisticas");
   const atuais = valor ?? estatisticasSemente;
 
-  // Demo preenche indicador por indicador: se o Carlos já salvou dois
+  // Demo preenche indicador por indicador: se o Carlinhos já salvou dois
   // números no painel, esses dois continuam valendo.
   if (!MODO_DEMO) return atuais;
 
@@ -226,7 +226,7 @@ export async function obterDepoimentos(): Promise<Depoimento[]> {
 
 export async function obterCoeficientes(): Promise<Coeficientes> {
   // Em demo a base é a tabela fictícia, para o simulador calcular durante
-  // a apresentação em vez de listar o que falta. O que o Carlos salvar no
+  // a apresentação em vez de listar o que falta. O que o Carlinhos salvar no
   // painel continua sobrescrevendo, chave por chave.
   const base = MODO_DEMO ? coeficientesDemo : coeficientesPadrao;
 

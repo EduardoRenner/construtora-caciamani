@@ -5,7 +5,7 @@
  * enfeite de layout.
  *
  * MESMA RESSALVA dos serviços — estas etapas descrevem um processo real
- * de obra, mas o Carlos precisa confirmar que é assim que ELE trabalha.
+ * de obra, mas o Carlinhos precisa confirmar que é assim que ELE trabalha.
  * Ver PENDENCIAS.md.
  */
 export const processoConfirmadoPeloCliente = false;

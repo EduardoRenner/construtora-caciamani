@@ -100,7 +100,7 @@ export function Resultado({
         className="mt-8 w-full sm:w-auto"
       >
         <IconeWhatsApp className="size-5" />
-        Enviar para o Carlos no WhatsApp
+        Enviar para o Carlinhos no WhatsApp
       </BotaoLink>
 
       {!gravado ? (

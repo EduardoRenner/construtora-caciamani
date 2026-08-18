@@ -33,7 +33,7 @@ export function RetratoProprietario({
         className={`relative aspect-3/4 w-full bg-vidro/50 bg-[repeating-linear-gradient(135deg,transparent_0_11px,rgba(90,96,103,0.13)_11px_12px)] ${className ?? ""}`}
       >
         <div className="absolute inset-x-3 bottom-3">
-          <Pendente bloco>retrato do Carlos, na obra</Pendente>
+          <Pendente bloco>retrato do Carlinhos, na obra</Pendente>
         </div>
       </div>
     );

@@ -1,11 +1,11 @@
 /**
  * Otimização de imagem no NAVEGADOR, antes de enviar.
  *
- * As fotos vêm do celular do Carlos com 6 MB e 4000 px de largura. Fazer
+ * As fotos vêm do celular do Carlinhos com 6 MB e 4000 px de largura. Fazer
  * isso no cliente resolve três problemas de uma vez:
  *   1. sobe ~200 kB em vez de 6 MB — decisivo no 4G do canteiro de obra;
  *   2. não gasta CPU de servidor nem exige biblioteca nativa no deploy;
- *   3. o Carlos não espera minutos por foto.
+ *   3. o Carlinhos não espera minutos por foto.
  *
  * Saída em WebP: é o formato com melhor compressão que o `canvas` sabe
  * gerar em todos os navegadores atuais. AVIF comprime mais, mas
@@ -88,7 +88,7 @@ export function proporcao(imagem: ImagemOtimizada): number {
 
 /**
  * O comparador antes/depois só funciona se as duas fotos tiverem o mesmo
- * enquadramento. Esta checagem avisa o Carlos no momento do envio, que é
+ * enquadramento. Esta checagem avisa o Carlinhos no momento do envio, que é
  * quando ainda dá para tirar a foto de novo — não depois, no site.
  */
 export function enquadramentosBatem(

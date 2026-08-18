@@ -7,7 +7,7 @@ import type { Depoimento, Obra } from "./tipos";
  * CONTEÚDO DEMONSTRATIVO — TUDO NESTE ARQUIVO É FICTÍCIO
  * ─────────────────────────────────────────────────────────────────────
  *
- * Existe por um motivo só: permitir apresentar o site ao Carlos como um
+ * Existe por um motivo só: permitir apresentar o site ao Carlinhos como um
  * produto pronto, sem seção vazia, antes de a empresa fornecer os dados
  * reais. Nada daqui vai ao ar como informação da empresa.
  *
@@ -28,7 +28,7 @@ import type { Depoimento, Obra } from "./tipos";
  *   CNPJ · razão social · CREA · responsável técnico · endereço ·
  *   certificação · prêmio · registro · dado financeiro real ·
  *   depoimento assinado por pessoa real identificável ·
- *   fala em primeira pessoa atribuída ao Carlos Primo Caciamani
+ *   fala em primeira pessoa atribuída ao Carlinhos Primo Caciamani
  *
  * Esses continuam pendentes mesmo em modo demo, porque errar aí não é
  * "demo malfeita", é problema jurídico. Em modo demo eles aparecem como
@@ -78,7 +78,7 @@ export const estatisticasDemo: Estatistica[] = [
 /**
  * Municípios reais do extremo-oeste catarinense, usados só para a
  * demonstração. Prometer atendimento onde não há é problema comercial —
- * a lista definitiva tem que vir do Carlos.
+ * a lista definitiva tem que vir do Carlinhos.
  */
 export const cidadesDemo: string[] = [
   "Maravilha",
@@ -291,7 +291,7 @@ export const depoimentosDemo: Depoimento[] = [
  */
 export const empresaDemo = {
   horarioAtendimento: "Segunda a sexta, das 8h às 18h · Sábado, das 8h às 12h",
-  /** Ano de início. Demonstrativo; o real tem que vir do Carlos. */
+  /** Ano de início. Demonstrativo; o real tem que vir do Carlinhos. */
   desdeAno: 2008,
   /** Texto sobre a empresa — não é fala de ninguém, é descrição. */
   historia:
@@ -311,7 +311,7 @@ export const institucional = {
     empresa.proprietario.desdeAno ?? (MODO_DEMO ? empresaDemo.desdeAno : null),
   /**
    * Descrição da empresa em terceira pessoa. NÃO é — e não pode virar —
-   * fala do Carlos: frase em primeira pessoa atribuída a pessoa real
+   * fala do Carlinhos: frase em primeira pessoa atribuída a pessoa real
    * continua pendente mesmo em modo demo.
    */
   historia: MODO_DEMO ? empresaDemo.historia : null,

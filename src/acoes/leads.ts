@@ -62,7 +62,7 @@ export async function registrarLeadOrcamento(
   }
 
   // Guarda a estimativa que o cliente viu, com os coeficientes vigentes
-  // no momento — se o Carlos recalibrar depois, o histórico continua
+  // no momento — se o Carlinhos recalibrar depois, o histórico continua
   // dizendo o que foi mostrado na época.
   const estimativa = calcularOrcamento(
     {

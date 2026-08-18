@@ -18,7 +18,7 @@ import { reaisBR } from "@/lib/utils";
 /**
  * Edição dos coeficientes do simulador, com prévia ao vivo.
  *
- * A prévia é o ponto: o Carlos não pensa em "fator 1.2", ele pensa em
+ * A prévia é o ponto: o Carlinhos não pensa em "fator 1.2", ele pensa em
  * "casa de 150 m² dá quanto?". Ver o resultado mudar enquanto digita é o
  * que torna a calibragem possível sem ele entender a fórmula.
  */

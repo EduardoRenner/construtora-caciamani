@@ -16,7 +16,7 @@ const rotulo = (
 /**
  * Monta a mensagem que abre no WhatsApp já escrita.
  *
- * O objetivo é que o Carlos leia tudo sem precisar perguntar de novo:
+ * O objetivo é que o Carlinhos leia tudo sem precisar perguntar de novo:
  * chega tipo, área, padrão, terreno, prazo e contato numa mensagem só.
  * O `*` é a negrito do WhatsApp.
  */

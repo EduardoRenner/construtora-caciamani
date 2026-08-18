@@ -28,7 +28,7 @@ export default async function LayoutAdmin({
   children: React.ReactNode;
 }) {
   // Sem Supabase o painel não tem como existir. Sem este desvio, o
-  // middleware deixa passar (não há como autenticar) e o Carlos veria um
+  // middleware deixa passar (não há como autenticar) e o Carlinhos veria um
   // painel vazio, achando que está quebrado.
   if (!supabaseConfigurado()) {
     return (
@@ -116,7 +116,7 @@ export default async function LayoutAdmin({
       {/* Sem este aviso o painel parece quebrado durante a demonstração:
           o site mostra 8 obras e 3 depoimentos, e as telas daqui abrem
           quase vazias. Não é bug — é o conteúdo demonstrativo vindo do
-          código, não do banco. Melhor dizer isso do que deixar o Carlos
+          código, não do banco. Melhor dizer isso do que deixar o Carlinhos
           descobrir sozinho no meio da apresentação. */}
       {MODO_DEMO ? (
         <div className="border-b border-marca/40 bg-marca/10">

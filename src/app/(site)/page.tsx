@@ -274,7 +274,7 @@ function OConstrutor() {
                   </p>
                 ) : null}
                 <Pendente bloco>
-                  uma fala do Carlos em primeira pessoa — por que ele construiu
+                  uma fala do Carlinhos em primeira pessoa — por que ele construiu
                   a primeira obra, e o que ele não abre mão numa obra hoje
                 </Pendente>
               </>

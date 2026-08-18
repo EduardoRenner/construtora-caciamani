@@ -30,7 +30,7 @@ async function exigirSessao() {
 
 /**
  * Recalcula as páginas públicas afetadas.
- * Sem isto, o Carlos salva e continua vendo o site velho por até 5
+ * Sem isto, o Carlinhos salva e continua vendo o site velho por até 5
  * minutos — e conclui que o painel não funciona.
  */
 function recalcularSite(caminhos: string[] = []) {

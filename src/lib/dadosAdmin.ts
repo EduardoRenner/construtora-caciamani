@@ -188,7 +188,7 @@ export async function obterLeadComHistorico(id: string): Promise<{
 /**
  * Tarefas não concluídas, com o nome do lead, para o aviso de
  * "atrasadas / para hoje" no início do painel. Limitado a 50 — se
- * passar disso, o problema não é técnico, é o Carlos não estar
+ * passar disso, o problema não é técnico, é o Carlinhos não estar
  * concluindo tarefa nenhuma.
  */
 export async function listarTarefasPendentes(): Promise<TarefaComLead[]> {

@@ -15,7 +15,7 @@
  * O CUB (Custo Unitário Básico) é publicado mensalmente pelo Sinduscon e
  * é a referência que o mercado já usa. Ancorar nele significa que:
  *   1. a estimativa é defensável se o cliente perguntar de onde saiu;
- *   2. a inflação do setor se corrige sozinha — o Carlos atualiza UM
+ *   2. a inflação do setor se corrige sozinha — o Carlinhos atualiza UM
  *      número e todo o simulador acompanha;
  *   3. os fatores viram multiplicadores pequenos, fáceis de calibrar.
  *
@@ -85,7 +85,7 @@ export const tiposConstrucao: Array<{
 ];
 
 /**
- * ATENÇÃO: rascunho concreto, para o Carlos corrigir. Estes itens
+ * ATENÇÃO: rascunho concreto, para o Carlinhos corrigir. Estes itens
  * definem expectativa de acabamento e viram discussão na obra se
  * estiverem errados. Ver PENDENCIAS.md → 4.6.
  */
@@ -180,7 +180,7 @@ export interface Coeficientes {
 
 const semPrazo = { base: null, porCemM2: null };
 
-/** Estado inicial: tudo pendente. O painel sobrescreve com o que o Carlos salvar. */
+/** Estado inicial: tudo pendente. O painel sobrescreve com o que o Carlinhos salvar. */
 export const coeficientesPadrao: Coeficientes = {
   cubValorM2: null,
   cubProjetoPadrao: null,

@@ -3,7 +3,7 @@
  *
  * ATENÇÃO — os textos abaixo foram escritos no tom certo (concreto, sem
  * adjetivo vazio), mas descrevem o MODO DE TRABALHAR da empresa, e isso
- * é fato, não estilo. O Carlos precisa confirmar ou corrigir cada linha
+ * é fato, não estilo. O Carlinhos precisa confirmar ou corrigir cada linha
  * antes de o site ir ao ar: se a Caciamani não cuida da aprovação na
  * prefeitura, por exemplo, a frase precisa mudar.
  *

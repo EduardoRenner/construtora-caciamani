@@ -34,7 +34,7 @@ export default async function ContatoPage() {
       <TopoPagina
         rotulo="Contato"
         titulo="Falar com a Caciamani"
-        descricao="O caminho mais rápido é o WhatsApp — é por onde o Carlos responde."
+        descricao="O caminho mais rápido é o WhatsApp — é por onde o Carlinhos responde."
         cota="contato"
       />
 

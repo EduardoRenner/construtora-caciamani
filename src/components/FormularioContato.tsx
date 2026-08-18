@@ -78,7 +78,7 @@ export function FormularioContato({
       >
         <h3 className="titulo text-xl">Recebemos seu contato</h3>
         <p className="prosa mt-3 text-base text-concreto">
-          O Carlos responde pelo WhatsApp. Se quiser adiantar, é só abrir a
+          O Carlinhos responde pelo WhatsApp. Se quiser adiantar, é só abrir a
           conversa — a mensagem já vai escrita.
         </p>
         <BotaoLink

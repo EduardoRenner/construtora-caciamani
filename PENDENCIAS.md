@@ -8,14 +8,14 @@ o modo demonstração **desligado**: 28 na home, 15 em `/obras`, 13 em
 e `/orçamento` — nessas duas o que aparece é só o rodapé, que é global.
 
 > **Existe agora um modo demonstração** (`NEXT_PUBLIC_MODO_DEMO=true`),
-> para apresentar o site ao Carlos sem seção vazia. Ele **não resolve
+> para apresentar o site ao Carlinhos sem seção vazia. Ele **não resolve
 > nada desta lista** — só troca o marcador por conteúdo fictício,
 > centralizado em `src/content/demo.ts`. Com a flag ligada a home cai de
 > 28 marcadores para **5**, `/obras` para **5**, `/sobre` para **9** e
 > `/contato` para **7**; os que sobram são justamente os que conteúdo
 > fictício não pode cobrir (itens 1.1, 1.2, 1.3, 3.6, 3.8). Repare que a
 > home fica com **5** marcadores e nenhum deles é de seção: são a fala
-> do Carlos e as quatro linhas cadastrais do rodapé, que aparecem em
+> do Carlinhos e as quatro linhas cadastrais do rodapé, que aparecem em
 > toda página. **Tudo aqui continua valendo.** Ver seção 0-B e o README.
 
 Atualizado depois de uma **auditoria técnica completa** (dev sênior:
@@ -45,7 +45,7 @@ propósito. O que mudou foi correção de bug, segurança e organização.
   pelo otimizador do Next, que recusa (erro 400) qualquer domínio de
   imagem não liberado explicitamente. Hoje isso não aparece porque as
   únicas fotos no ar são arquivos locais — mas a **primeira** foto que o
-  Carlos subir pelo painel (hospedada no Storage do Supabase,
+  Carlinhos subir pelo painel (hospedada no Storage do Supabase,
   `*.supabase.co`) quebraria em toda página que a exibisse. Corrigido:
   o domínio é extraído automaticamente de `NEXT_PUBLIC_SUPABASE_URL`,
   então funciona com qualquer projeto Supabase configurado, sem
@@ -107,7 +107,7 @@ propósito. O que mudou foi correção de bug, segurança e organização.
 
 ## 0-B. Modo demonstração — o que foi feito e por quê
 
-O site precisava ser apresentável ao Carlos antes de a empresa fornecer
+O site precisava ser apresentável ao Carlinhos antes de a empresa fornecer
 os dados. Isso colide de frente com a regra do projeto, então a saída
 foi não misturar as duas coisas: **uma camada demo separada, num arquivo
 só, atrás de uma variável de ambiente.**
@@ -118,7 +118,7 @@ só, atrás de uma variável de ambiente.**
   terceira pessoa e a tabela de coeficientes do orçamento. Nenhum desses
   textos está espalhado pelo código — trocar pelo real é editar um
   arquivo e apagar a variável.
-- **A ordem nunca inverte.** Banco → semente → demo. Se o Carlos salvar
+- **A ordem nunca inverte.** Banco → semente → demo. Se o Carlinhos salvar
   dois dos quatro números no painel, esses dois continuam valendo e só
   os outros dois vêm do demo. O mesmo vale obra por obra e depoimento
   por depoimento.
@@ -168,7 +168,7 @@ código.
 ## 0-C. Revisão de apresentação (17/08/2026)
 
 Passe feito para responder a uma pergunta só: **dá para mostrar ao
-Carlos?** Três defeitos apareceram, e os três eram invisíveis nas
+Carlinhos?** Três defeitos apareceram, e os três eram invisíveis nas
 verificações anteriores porque nenhuma ferramenta automática os pega.
 Todos corrigidos; a checagem foi por medição, não por impressão.
 
@@ -209,7 +209,7 @@ normal: conferido, 13,47:1, sem regressão.
 lugares — incluindo o `<title>`, a meta description, o JSON-LD e o nome
 do serviço. O próprio projeto já escrevia "geminadas" nos nomes de
 arquivo e em dois slugs de obra, o que mostra que era lapso, não escolha
-regional. É o erro mais caro possível numa apresentação: o Carlos
+regional. É o erro mais caro possível numa apresentação: o Carlinhos
 constrói geminada, ele conhece a palavra.
 
 Corrigido em **todo o texto visível** (24 ocorrências no `src/`, mais os
@@ -270,7 +270,7 @@ valendo, principalmente no tema claro da home.
 
 ## 0-D. Estado do banco e do painel (18/08/2026)
 
-Verificação feita quando o login do Carlos foi criado. A pergunta era
+Verificação feita quando o login do Carlinhos foi criado. A pergunta era
 "dá para entrar no painel agora?" — dá, mas o que apareceu no caminho
 importa mais do que a resposta.
 
@@ -296,7 +296,7 @@ de login responde 200. Ver 1.4b.
 obras que o site mostra não vêm do banco — vêm do arquivo de semente
 (`src/content/obras.ts`) e do modo demonstração. No banco existe **uma**
 obra, e ela está despublicada. Então abrir `/admin/obras` na frente do
-Carlos para dizer "é aqui que você edita o site" mostra 1 item
+Carlinhos para dizer "é aqui que você edita o site" mostra 1 item
 despublicado enquanto o site ao lado exibe 6. A pergunta que isso gera é
 justamente a que não se quer responder na hora.
 
@@ -321,11 +321,11 @@ como 1.4b e 2.3, para conferência humana no dashboard.
 | 1.2 | **CREA e nome do responsável técnico** | Exigência do CONFEA/CREA para divulgação de serviços de engenharia. | Rodapé |
 | 1.3 | **Endereço do escritório** (rua, bairro, CEP) | Alimenta o `LocalBusiness` do Google e a página de contato. Sem ele o SEO local perde muito. | Contato, rodapé, JSON-LD |
 | 1.4 | ~~Criar o projeto no Supabase, rodar as migrações, preencher `.env.local`~~ — **feito em 12/08/2026.** Projeto `caciamani` (`dlrfheafvjjcckwnzunh`), as 4 migrações aplicadas e verificadas, `.env.local` e as 3 variáveis da Vercel (produção, preview, dev) configuradas. | — | — |
-| 1.4b | ~~Criar o login do Carlos~~ — **feito em 18/08/2026.** Existem **2 contas** em `auth.users`, as duas com e-mail confirmado (confirmação importa: conta criada pelo dashboard sem confirmar falha no `signInWithPassword`). O portão foi testado e responde certo: `/admin`, `/admin/leads` e `/admin/clientes` devolvem 307 para `/admin/entrar?de=…`, preservando o destino. **Conferir no dashboard quais são as duas** — a mais antiga é de 11/08, anterior a esta lista, e não há papel de leitura: qualquer conta autenticada manda em tudo (ver 1.6). | — | — |
+| 1.4b | ~~Criar o login do Carlinhos~~ — **feito em 18/08/2026.** Existem **2 contas** em `auth.users`, as duas com e-mail confirmado (confirmação importa: conta criada pelo dashboard sem confirmar falha no `signInWithPassword`). O portão foi testado e responde certo: `/admin`, `/admin/leads` e `/admin/clientes` devolvem 307 para `/admin/entrar?de=…`, preservando o destino. **Conferir no dashboard quais são as duas** — a mais antiga é de 11/08, anterior a esta lista, e não há papel de leitura: qualquer conta autenticada manda em tudo (ver 1.6). | — | — |
 | 1.5 | **Logo em vetor** (`.svg`, `.ai`, `.pdf` ou PNG grande com fundo transparente) | Hoje só existe em raster, do Instagram. Sem vetor não dá para gerar favicon nítido, imagem Open Graph nem a versão monocromática para fundo escuro. O site usa um wordmark provisório em tipo — **não** um monograma inventado. | Header, rodapé, favicon, OG |
-| 1.6 | **Limpar o seed de demonstração do CRM antes de o Carlos usar o painel.** A verificação de 18/08 encontrou no banco de produção **6 leads começando com "Exemplo", 5 interações e 5 tarefas** — é o `supabase/seed_demo_crm.sql`, que avisa no próprio arquivo para rodar só num Supabase de demonstração, nunca no que o Carlos vai usar. Para a apresentação ajuda, porque o funil aparece cheio; depois disso ele começaria a trabalhar com clientes falsos misturados aos reais. A limpeza está no fim do próprio arquivo. | Se ficar, o CRM nasce sujo e não dá para confiar em nenhuma contagem do funil. | `/admin/clientes`, `/admin/leads` |
+| 1.6 | **Limpar o seed de demonstração do CRM antes de o Carlinhos usar o painel.** A verificação de 18/08 encontrou no banco de produção **6 leads começando com "Exemplo", 5 interações e 5 tarefas** — é o `supabase/seed_demo_crm.sql`, que avisa no próprio arquivo para rodar só num Supabase de demonstração, nunca no que o Carlinhos vai usar. Para a apresentação ajuda, porque o funil aparece cheio; depois disso ele começaria a trabalhar com clientes falsos misturados aos reais. A limpeza está no fim do próprio arquivo. | Se ficar, o CRM nasce sujo e não dá para confiar em nenhuma contagem do funil. | `/admin/clientes`, `/admin/leads` |
 
-## 2. Precisam da conferência do Carlos
+## 2. Precisam da conferência do Carlinhos
 
 Estes textos **já estão escritos** no site, no tom certo. Mas descrevem
 como a empresa trabalha, e isso é fato, não estilo. Se algum estiver
@@ -334,7 +334,7 @@ errado, a frase muda.
 | # | O que conferir | Arquivo |
 |---|---|---|
 | 2.1 | **Descrição dos 5 serviços** e o que está incluído em cada um. Exemplo concreto: o site afirma que a Caciamani cuida da documentação para aprovação. Cuida mesmo? | `src/content/servicos.ts` |
-| 2.2 | **As 6 etapas da obra** e o que o cliente recebe ao fim de cada uma. É assim que o Carlos trabalha? | `src/content/processo.ts` |
+| 2.2 | **As 6 etapas da obra** e o que o cliente recebe ao fim de cada uma. É assim que o Carlinhos trabalha? | `src/content/processo.ts` |
 | 2.3 | **Os 2 leads que não começam com "Exemplo"** (verificação de 18/08). Podem ser envios reais do formulário ou sobra dos testes da auditoria de 12/08 — o conteúdo não foi aberto aqui, é dado pessoal de terceiro. Se forem reais, alguém pediu orçamento e ninguém respondeu; se forem teste, entram na limpeza do 1.6. | tabela `leads` |
 
 ## 3. Bloqueiam seções inteiras
@@ -347,7 +347,7 @@ errado, a frase muda.
 | 3.3 | **Pares antes/depois** — as duas fotos precisam ter **exatamente o mesmo enquadramento e a mesma proporção**. Isso tem que ser fotografado de propósito: vale tirar a foto do terreno antes de começar toda obra nova, do mesmo ponto. | Home, /obras/[slug] |
 | 3.4 | **Dados de cada obra**: ano, área em m², prazo de execução, uma linha de resumo, descrição | /obras e cards da home |
 | 3.5 | **Depoimentos** com nome, bairro/cidade, texto do cliente e autorização de uso | Home |
-| 3.6 | ~~Retrato do Carlos Primo Caciamani~~ — **foto real recebida e publicada** (12/08/2026), em `public/equipe/`. Continua faltando: o **ano em que ele começou** (hoje vem do modo demonstração) e uma **fala dele em primeira pessoa**, que segue pendente mesmo em demo. | Home, /sobre |
+| 3.6 | ~~Retrato do Carlinhos Primo Caciamani~~ — **foto real recebida e publicada** (12/08/2026), em `public/equipe/`. Continua faltando: o **ano em que ele começou** (hoje vem do modo demonstração) e uma **fala dele em primeira pessoa**, que segue pendente mesmo em demo. | Home, /sobre |
 | 3.7 | **Lista nomeada das cidades atendidas** — hoje só Maravilha está confirmada | Área de atendimento, JSON-LD `areaServed` |
 | 3.8 | **E-mail de contato** e **horário de atendimento** | Contato, rodapé |
 | 3.9 | **Telefone fixo**, se houver | Contato, rodapé |
@@ -384,7 +384,7 @@ A razão entre os dois é o fator.
 | 5.1 | O corretor parceiro **Marcos Aléssio** (CRECI/SC 20.692, (49) 98862-0341) entra no site? Em qual seção? |
 | 5.2 | O Facebook entra? Se sim, a URL da página. |
 | 5.3 | Qual **domínio** será registrado (hoje está `construtoracaciamani.com.br` como provisório). |
-| 5.4 | **Como o Carlos quer ser avisado de um lead novo.** O aviso por **e-mail** é simples e praticamente sem custo (Resend, plano gratuito cobre este volume) — mas e-mail é fácil de não ler. O aviso por **WhatsApp** seria muito mais eficaz, só que exige a API oficial da Meta: custo por mensagem, modelo de mensagem aprovado previamente e conta comercial verificada. O site está sendo feito com e-mail; trocar depois é possível. |
+| 5.4 | **Como o Carlinhos quer ser avisado de um lead novo.** O aviso por **e-mail** é simples e praticamente sem custo (Resend, plano gratuito cobre este volume) — mas e-mail é fácil de não ler. O aviso por **WhatsApp** seria muito mais eficaz, só que exige a API oficial da Meta: custo por mensagem, modelo de mensagem aprovado previamente e conta comercial verificada. O site está sendo feito com e-mail; trocar depois é possível. |
 | 5.5 | Quem recebe os leads e por onde (só WhatsApp, ou também e-mail?). |
 
 ## 6. Melhoram, mas não bloqueiam
@@ -408,8 +408,8 @@ A razão entre os dois é o fator.
 - **Logo definida**: é a de fundo marinho, com os prédios em ciano e "CPC CACIAMANI CONSTRUTORA" em âmbar. O tema escuro do site (padrão) foi construído em cima dela: marinho `#0A1826`, ciano `#35C2E3`, âmbar `#F2A81D`. A versão amarela antiga não é mais referência — se ela aparecer em material novo, é engano.
 - **Dois renders no ar**, recuperados dos prints do Instagram e limpos: o prédio residencial (hero + card + página da obra) e as duas casas geminadas. Ver 3.2 para os originais em alta.
 - **Escopo do painel admin** (decidido na fase 6). Além da base — obras, estatísticas, textos, depoimentos, valores do orçamento, leads com CSV, contatos e cidades — entram três coisas: marcar lead como atendido com anotação, rascunho/publicado com prévia, e aviso de novo lead. Ficaram **de fora** por decisão: diário de obra com link privado, área logada por cliente, origem do lead, upload dedicado para celular, pedido automático de depoimento e agendamento de visita. Todos podem entrar depois.
-- **CRM (funil de clientes)** — adicionado depois da fase 8, revertendo a decisão da fase 6. Lá, "CRM com funil e estágios" tinha ficado marcado como "não vale a complexidade", com o argumento de que o Carlos ia continuar usando o WhatsApp e um meio-CRM só criaria um segundo lugar pra esquecer as coisas. O motivo mudou: não é para o Carlos usar todo dia, é para o painel ficar mais convincente **na hora de vender o serviço** — então o argumento original não se aplica mais. Entrou completo: `/admin/clientes` (quadro em colunas: Novo → Contatado → Orçamento enviado → Fechado/Perdido, com arrastar-e-soltar e um `<select>` acessível fazendo a mesma função) e `/admin/clientes/[id]` (histórico de interação com data, tarefas com vencimento). O início do painel ganhou um aviso de tarefas atrasadas/do dia. Migração em `supabase/migracoes/0003_crm.sql`.
-  - **Dados de exemplo, para a demonstração**: `supabase/seed_demo_crm.sql`, com nomes claramente marcados "Exemplo — ...". Só para rodar num Supabase de demonstração, nunca no banco que o Carlos vai usar de verdade — o resto deste documento existe justamente para nenhum dado inventado chegar perto do que é real. Tem instrução de limpeza no fim do próprio arquivo.
+- **CRM (funil de clientes)** — adicionado depois da fase 8, revertendo a decisão da fase 6. Lá, "CRM com funil e estágios" tinha ficado marcado como "não vale a complexidade", com o argumento de que o Carlinhos ia continuar usando o WhatsApp e um meio-CRM só criaria um segundo lugar pra esquecer as coisas. O motivo mudou: não é para o Carlinhos usar todo dia, é para o painel ficar mais convincente **na hora de vender o serviço** — então o argumento original não se aplica mais. Entrou completo: `/admin/clientes` (quadro em colunas: Novo → Contatado → Orçamento enviado → Fechado/Perdido, com arrastar-e-soltar e um `<select>` acessível fazendo a mesma função) e `/admin/clientes/[id]` (histórico de interação com data, tarefas com vencimento). O início do painel ganhou um aviso de tarefas atrasadas/do dia. Migração em `supabase/migracoes/0003_crm.sql`.
+  - **Dados de exemplo, para a demonstração**: `supabase/seed_demo_crm.sql`, com nomes claramente marcados "Exemplo — ...". Só para rodar num Supabase de demonstração, nunca no banco que o Carlinhos vai usar de verdade — o resto deste documento existe justamente para nenhum dado inventado chegar perto do que é real. Tem instrução de limpeza no fim do próprio arquivo.
   - Achado no caminho: `vencimento` é uma coluna `date` do Postgres ("AAAA-MM-DD", sem hora). Formatar isso com `new Date(...)` ou comparar com `toISOString()` interpreta a data como meia-noite UTC — no fuso do Brasil (UTC-3), à noite isso já mostra o dia seguinte. Uma tarefa "para hoje" apareceria como não vencida ainda, ou vencida um dia antes da hora. Corrigido montando a data a partir das partes, sem passar por UTC. Provado isoladamente simulando 23h no fuso de São Paulo.
 - **Supabase configurado e verificado, em produção** (12/08/2026). Projeto `caciamani` (ref `dlrfheafvjjcckwnzunh`), as 4 migrações aplicadas via `supabase db query --linked -f ...` (o CLI já estava autenticado nesta máquina). Verificação foi além de "rodou sem erro":
   - Confirmado por consulta direta: as 8 tabelas existem com RLS ligado, os 2 gatilhos existem, a coluna `estagio` tem o valor padrão certo, o bucket `obras` existe e é público.

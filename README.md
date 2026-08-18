@@ -74,7 +74,7 @@ de banco fora do ar.
 A terceira é o **modo demonstração** — `src/content/demo.ts`, ligado por
 `NEXT_PUBLIC_MODO_DEMO=true`. Ele entra **sempre por último**, só onde
 banco e semente deixaram buraco, e existe para apresentar o site ao
-Carlos sem seção vazia. Desligar a variável devolve o site exatamente ao
+Carlinhos sem seção vazia. Desligar a variável devolve o site exatamente ao
 comportamento original, sem tocar em código.
 
 | | Com a flag desligada | Com a flag ligada |
@@ -85,7 +85,7 @@ comportamento original, sem tocar em código.
 | Cidades atendidas | Maravilha + `⟨PENDENTE⟩` | 8 municípios da região |
 | Simulador | "ainda não está calibrado" + o que falta | calcula, com aviso de que os coeficientes são fictícios |
 | Antes/depois | comparador com placeholder | seção sai do ar (par exige duas fotos do mesmo enquadramento) |
-| CNPJ, CREA, endereço, razão social, fala do Carlos | `⟨PENDENTE: descrição inteira⟩` | `⟨a confirmar⟩` — **nunca preenchidos** |
+| CNPJ, CREA, endereço, razão social, fala do Carlinhos | `⟨PENDENTE: descrição inteira⟩` | `⟨a confirmar⟩` — **nunca preenchidos** |
 
 A última linha é a regra, não uma exceção: dado com efeito jurídico e
 frase em primeira pessoa atribuída a pessoa real continuam pendentes com
@@ -195,7 +195,7 @@ dentro de uma seção escura usa `superficie-clara`.
   Google derrubaria o LCP por causa de algo que quase ninguém usa no
   celular.
 - **As fotos são otimizadas no navegador antes de subir** (2000px, WebP).
-  As fotos vêm do celular do Carlos com 6 MB. O
+  As fotos vêm do celular do Carlinhos com 6 MB. O
   `imageOrientation: "from-image"` evita que foto tirada com o celular
   deitado suba girada.
 - **Os coeficientes do orçamento são parâmetro, nunca estado de módulo.**
@@ -234,7 +234,7 @@ dentro de uma seção escura usa `superficie-clara`.
 2. Rodar, no SQL Editor e **nesta ordem**: `0001_leads.sql`,
    `0002_conteudo.sql`, `0003_crm.sql`, `0004_seguranca_leads.sql`
 3. Preencher o `.env.local`
-4. Criar o usuário do Carlos em **Authentication › Users › Add user** —
+4. Criar o usuário do Carlinhos em **Authentication › Users › Add user** —
    não existe cadastro aberto no site
 
 O painel fica em `/admin`, e inclui um CRM em `/admin/clientes`
@@ -242,7 +242,7 @@ O painel fica em `/admin`, e inclui um CRM em `/admin/clientes`
 
 Para POPULAR o funil com dados de exemplo antes de uma demonstração de
 venda, rode também `supabase/seed_demo_crm.sql` — **só num projeto
-Supabase de demonstração, nunca no que o Carlos vai usar de verdade**.
+Supabase de demonstração, nunca no que o Carlinhos vai usar de verdade**.
 Todo nome ali é fictício e vem marcado "Exemplo — ...". Instrução de
 limpeza no fim do próprio arquivo.
 

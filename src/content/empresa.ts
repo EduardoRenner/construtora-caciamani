@@ -37,7 +37,7 @@ export const empresa = {
   /** Como a própria empresa se assina no material atual. */
   assinatura: "Construtora Incorporadora",
   proprietario: {
-    nome: "Carlos Primo Caciamani",
+    nome: "Carlinhos Primo Caciamani",
     cargo: null as string | null,
     /** Fala em primeira pessoa — é o que fecha negócio em cidade pequena. */
     depoimento: null as string | null,
@@ -48,8 +48,8 @@ export const empresa = {
      * verdade — continua no ar quando a flag for desligada.
      */
     foto: {
-      src: "/equipe/carlos-primo-caciamani.webp",
-      alt: "Carlos Primo Caciamani sentado à mesa do escritório da Caciamani, com a placa da construtora na parede atrás",
+      src: "/equipe/carlinhos-primo-caciamani.webp",
+      alt: "Carlinhos Primo Caciamani sentado à mesa do escritório da Caciamani, com a placa da construtora na parede atrás",
     } as { src: string; alt: string } | null,
   },
   cidadeSede: "Maravilha",

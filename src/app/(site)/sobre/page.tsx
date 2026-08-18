@@ -49,7 +49,7 @@ export default async function SobrePage() {
                 </blockquote>
               ) : (
                 <Pendente bloco>
-                  a fala do Carlos em primeira pessoa — como começou, por que
+                  a fala do Carlinhos em primeira pessoa — como começou, por que
                   ficou em {empresa.cidadeSede}, e o que ele não abre mão numa
                   obra
                 </Pendente>
@@ -58,7 +58,7 @@ export default async function SobrePage() {
 
             {/* A história é a única pendência desta página que o conteúdo
                 demonstrativo consegue cobrir — quando ele entra, o
-                marcador sai. A fala do Carlos, logo acima, não: frase em
+                marcador sai. A fala do Carlinhos, logo acima, não: frase em
                 primeira pessoa atribuída a pessoa real não se inventa. */}
             <div className="prosa mt-8 text-concreto">
               {institucional.historia ? (

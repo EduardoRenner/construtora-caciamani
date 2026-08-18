@@ -17,7 +17,7 @@ import { cn } from "@/lib/utils";
  * Demo (`NEXT_PUBLIC_MODO_DEMO=true`): `⟨a confirmar⟩`, curto. O que
  * sobra em modo demo é só o que não pode ser preenchido por conteúdo
  * demonstrativo em hipótese nenhuma — CNPJ, CREA, endereço, razão
- * social, fala do Carlos. Numa apresentação isso lê como campo a
+ * social, fala do Carlinhos. Numa apresentação isso lê como campo a
  * preencher, que é exatamente o que é; a descrição inteira continua
  * disponível para leitor de tela e para quem inspeciona a página.
  */
