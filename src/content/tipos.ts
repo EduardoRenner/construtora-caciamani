@@ -27,7 +27,7 @@ export type TipoObra = "casa" | "germinada" | "predio" | "reforma" | "projeto";
 
 export const rotulosTipoObra: Record<TipoObra, string> = {
   casa: "Casa",
-  germinada: "Casas germinadas",
+  germinada: "Casas geminadas",
   predio: "Prédio",
   reforma: "Reforma / ampliação",
   projeto: "Projeto",

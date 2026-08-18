@@ -46,7 +46,7 @@ export default async function OrcamentoPage() {
           <noscript>
             <div className="border border-noite/20 bg-cal-2 p-6">
               <h2 className="titulo text-xl">O simulador precisa de JavaScript</h2>
-              <p className="prosa mt-3 text-sm text-concreto">
+              <p className="prosa mt-3 text-base text-concreto">
                 Ele funciona em etapas, e isso não roda sem JavaScript. Mas você
                 não precisa dele para falar com a gente: manda uma mensagem
                 dizendo o que quer construir, o tamanho aproximado e a cidade.

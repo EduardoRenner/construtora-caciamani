@@ -9,7 +9,7 @@ export const revalidate = 300;
 
 export const metadata: Metadata = {
   title: "Obras",
-  description: `Casas, casas germinadas e prédios construídos pela Construtora Caciamani em ${empresa.cidadeSede} e região.`,
+  description: `Casas, casas geminadas e prédios construídos pela Construtora Caciamani em ${empresa.cidadeSede} e região.`,
   alternates: { canonical: "/obras" },
 };
 

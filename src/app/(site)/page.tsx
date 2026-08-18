@@ -110,7 +110,7 @@ function Hero() {
 
         <Entrada atraso={340}>
           <p className="prosa mt-6 text-base text-vidro md:text-lg">
-            Projeto e execução de casas, casas germinadas e prédios. A mesma
+            Projeto e execução de casas, casas geminadas e prédios. A mesma
             equipe do primeiro desenho até a entrega das chaves.
           </p>
         </Entrada>
@@ -140,7 +140,11 @@ function Hero() {
 
 function ObrasEmDestaque({ obras }: { obras: Obra[] }) {
   return (
-    <Secao id="obras" cota={`${obras.length} obra${obras.length === 1 ? "" : "s"}`}>
+    <Secao
+      id="obras"
+      cota={`${obras.length} obra${obras.length === 1 ? "" : "s"}`}
+      espacamento="solto"
+    >
       <div className="flex flex-wrap items-end justify-between gap-6">
         <div>
           <RotuloSecao>Obras</RotuloSecao>
@@ -189,18 +193,18 @@ function OQueFazemos() {
     <Secao id="servicos" cota={`${servicos.length} frentes`}>
       <RotuloSecao>O que a Caciamani faz</RotuloSecao>
       <TituloSecao className="max-w-[18ch]">
-        Casa, germinada, prédio e projeto
+        Casa, geminada, prédio e projeto
       </TituloSecao>
 
       <ul className="mt-12 grid gap-x-10 gap-y-12 md:grid-cols-2 lg:grid-cols-3">
         {servicos.map((servico) => (
           <li key={servico.slug} className="border-t border-noite/15 pt-5">
             <h3 className="titulo text-xl">{servico.titulo}</h3>
-            <p className="prosa mt-3 text-sm text-concreto">{servico.descricao}</p>
+            <p className="prosa mt-3 text-base text-concreto">{servico.descricao}</p>
             <ul className="mt-4 flex flex-col gap-2">
               {servico.inclui.map((item) => (
-                <li key={item} className="flex gap-2.5 text-sm text-concreto">
-                  <span aria-hidden="true" className="mt-2 h-px w-3 shrink-0 bg-marca" />
+                <li key={item} className="flex gap-2.5 text-base text-concreto">
+                  <span aria-hidden="true" className="mt-3 h-px w-3 shrink-0 bg-marca" />
                   {item}
                 </li>
               ))}
@@ -227,7 +231,7 @@ function ComoFunciona() {
               {String(indice + 1).padStart(2, "0")}
             </span>
             <h3 className="titulo mt-3 text-xl text-sobre-contraste">{etapa.titulo}</h3>
-            <p className="prosa mt-3 text-sm text-vidro/75">{etapa.descricao}</p>
+            <p className="prosa mt-3 text-base text-vidro/75">{etapa.descricao}</p>
             <p className="etiqueta mt-4 text-vidro/70">{etapa.entrega}</p>
           </li>
         ))}
@@ -244,7 +248,7 @@ function OConstrutor() {
   const { proprietario } = empresa;
 
   return (
-    <Secao cota="o construtor">
+    <Secao cota="o construtor" espacamento="solto">
       <div className="grid gap-10 lg:grid-cols-[minmax(0,24rem)_minmax(0,1fr)] lg:gap-16">
         <div>
           <RetratoProprietario />
@@ -332,7 +336,10 @@ function Depoimentos({ depoimentos }: { depoimentos: TipoDepoimento[] }) {
 
 function AreaDeAtendimento({ cidades }: { cidades: string[] }) {
   return (
-    <Secao cota={`${cidades.length} cidade${cidades.length > 1 ? "s" : ""}`}>
+    <Secao
+      cota={`${cidades.length} cidade${cidades.length > 1 ? "s" : ""}`}
+      espacamento="justo"
+    >
       <div className="grid gap-10 lg:grid-cols-[minmax(0,26rem)_minmax(0,1fr)] lg:gap-16">
         <div>
           <RotuloSecao>Área de atendimento</RotuloSecao>

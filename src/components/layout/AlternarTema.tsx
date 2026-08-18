@@ -20,7 +20,20 @@ export const scriptDoTema = `(function(){var d=document.documentElement;d.classL
  * hidratação: o servidor sempre manda "escuro", e a correção para quem
  * escolheu "claro" acontece antes de qualquer pixel aparecer.
  */
-export function AlternarTema({ className }: { className?: string }) {
+export function AlternarTema({
+  className,
+  claro = false,
+}: {
+  className?: string;
+  /**
+   * `true` quando o botão está sobre a foto escura do hero. A tinta do
+   * tema não serve ali: no tema claro `noite` sobre a foto dá 2,77:1.
+   * As classes são TROCADAS, não somadas — `cn` é um join simples, e
+   * duas utilitárias de cor no mesmo elemento deixam a ordem do CSS
+   * decidir o vencedor, não a ordem no atributo.
+   */
+  claro?: boolean;
+}) {
   const [tema, setTema] = useState<Tema>("escuro");
   const [montado, setMontado] = useState(false);
 
@@ -53,8 +66,10 @@ export function AlternarTema({ className }: { className?: string }) {
       aria-label={montado ? `Mudar para o tema ${vaiPara}` : "Mudar o tema"}
       title={montado ? `Mudar para o tema ${vaiPara}` : undefined}
       className={cn(
-        "relative grid size-11 shrink-0 place-items-center border border-noite/20",
-        "text-noite transition-colors duration-300 hover:border-noite",
+        "relative grid size-11 shrink-0 place-items-center border transition-colors duration-300",
+        claro
+          ? "border-sobre-contraste/30 text-sobre-contraste hover:border-sobre-contraste"
+          : "border-noite/20 text-noite hover:border-noite",
         className,
       )}
     >

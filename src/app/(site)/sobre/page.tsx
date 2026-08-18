@@ -28,7 +28,7 @@ export default async function SobrePage() {
       <TopoPagina
         rotulo="A construtora"
         titulo="Quem constrói"
-        descricao={`Construção e incorporação em ${empresa.cidadeSede}/${empresa.uf}. Casas, casas germinadas, prédios e obras sob demanda.`}
+        descricao={`Construção e incorporação em ${empresa.cidadeSede}/${empresa.uf}. Casas, casas geminadas, prédios e obras sob demanda.`}
         cota="a empresa"
       />
 

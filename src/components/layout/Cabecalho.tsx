@@ -28,6 +28,14 @@ export function Cabecalho() {
   // Fecha o menu ao trocar de página.
   useEffect(() => setAberto(false), [caminho]);
 
+  // O cabeçalho nasce transparente SOBRE A FOTO DO HERO, que é escura e
+  // não muda com o tema — o hero inteiro é `superficie-escura` por isso.
+  // O cabeçalho ficava de fora dessa regra: no tema claro a tinta era
+  // `noite` sobre foto escura, e a marca caía para 2,77:1 e os links
+  // para 1,08:1 (medido). Só a home tem hero; as internas abrem em
+  // superfície clara e precisam da tinta normal do tema.
+  const sobreHero = caminho === "/" && !aberto && !rolou;
+
   // Esc fecha e devolve o foco para o botão que abriu.
   useEffect(() => {
     if (!aberto) return;
@@ -66,7 +74,7 @@ export function Cabecalho() {
           className="shrink-0"
           aria-label="Caciamani Construtora Incorporadora — página inicial"
         >
-          <Marca />
+          <Marca claro={sobreHero} />
         </Link>
 
         <nav aria-label="Principal" className="hidden lg:block">
@@ -81,8 +89,18 @@ export function Cabecalho() {
                     // `sublinha` cresce da esquerda no hover e fica fixa
                     // na página atual — a mesma gramática do tick da cota.
                     className={cn(
-                      "etiqueta sublinha relative py-2 transition-colors duration-300 hover:text-noite",
-                      ativo ? "text-noite" : "text-concreto",
+                      "etiqueta sublinha relative py-2 transition-colors duration-300",
+                      // Sobre o hero a tinta é cheia para todos: `vidro`
+                      // dava 3,74:1 e a etiqueta tem 12px, que é texto
+                      // normal para o AA (4,5:1), não texto grande. Não
+                      // se perde a marcação da página atual porque
+                      // `sobreHero` só é verdadeiro em `/`, e a home não
+                      // está na navegação.
+                      sobreHero
+                        ? "text-sobre-contraste"
+                        : ativo
+                          ? "text-noite"
+                          : "text-concreto hover:text-noite",
                     )}
                   >
                     {item.rotulo}
@@ -94,17 +112,26 @@ export function Cabecalho() {
         </nav>
 
         <div className="flex items-center gap-2">
-          <AlternarTema />
+          <AlternarTema claro={sobreHero} />
 
-          <BotaoLink
-            href={linkWhatsApp(mensagemPadraoWhatsApp)}
-            externo
-            variante="escuro"
-            className="hidden sm:inline-flex"
-          >
-            <IconeWhatsApp className="size-4" />
-            Falar no WhatsApp
-          </BotaoLink>
+          {/* O `hidden` mora num elemento PRÓPRIO, e não no `className`
+              do botão. `cn` é um join simples: passada por className, a
+              classe `hidden` conviveria com o `inline-flex` da base do
+              BotaoLink, e quem decide o vencedor é a ordem do CSS
+              gerado — onde `.inline-flex` vem DEPOIS de `.hidden`. O
+              resultado era o botão aparecer no celular e empurrar o
+              menu hambúrguer para fora da tela (x=459 numa tela de
+              375px), deixando o site sem navegação no telefone. */}
+          <span className="hidden sm:block">
+            <BotaoLink
+              href={linkWhatsApp(mensagemPadraoWhatsApp)}
+              externo
+              variante="escuro"
+            >
+              <IconeWhatsApp className="size-4" />
+              Falar no WhatsApp
+            </BotaoLink>
+          </span>
 
           <button
             ref={botaoMenu}
@@ -112,7 +139,10 @@ export function Cabecalho() {
             onClick={() => setAberto((estado) => !estado)}
             aria-expanded={aberto}
             aria-controls="menu-mobile"
-            className="-mr-2 flex size-11 shrink-0 items-center justify-center text-noite lg:hidden"
+            className={cn(
+              "-mr-2 flex size-11 shrink-0 items-center justify-center transition-colors duration-300 lg:hidden",
+              sobreHero ? "text-sobre-contraste" : "text-noite",
+            )}
           >
             <span className="sr-only">{aberto ? "Fechar menu" : "Abrir menu"}</span>
             {aberto ? <IconeFechar className="size-6" /> : <IconeMenu className="size-6" />}

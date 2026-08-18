@@ -15,7 +15,7 @@ export function Rodape() {
         <div className="grid gap-12 md:grid-cols-[1.2fr_1fr_1fr]">
           <div>
             <Marca claro />
-            <p className="prosa mt-5 text-sm text-vidro/75">
+            <p className="prosa mt-5 text-base text-vidro/75">
               Construção e incorporação em {empresa.cidadeSede}/{empresa.uf} e
               região.
             </p>

@@ -77,7 +77,7 @@ export function FormularioContato({
         className="superficie-clara border border-noite/15 bg-cal p-6 text-noite md:p-8"
       >
         <h3 className="titulo text-xl">Recebemos seu contato</h3>
-        <p className="prosa mt-3 text-sm text-concreto">
+        <p className="prosa mt-3 text-base text-concreto">
           O Carlos responde pelo WhatsApp. Se quiser adiantar, é só abrir a
           conversa — a mensagem já vai escrita.
         </p>

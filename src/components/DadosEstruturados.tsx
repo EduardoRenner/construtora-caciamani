@@ -18,7 +18,7 @@ export function DadosEstruturados({ cidades }: { cidades: string[] }) {
     "@type": ["GeneralContractor", "LocalBusiness"],
     "@id": `${urlSite}#negocio`,
     name: empresa.nome,
-    description: `Construtora e incorporadora em ${empresa.cidadeSede}/${empresa.uf}. Projeto e construção de casas, casas germinadas e prédios.`,
+    description: `Construtora e incorporadora em ${empresa.cidadeSede}/${empresa.uf}. Projeto e construção de casas, casas geminadas e prédios.`,
     url: urlSite,
     telephone: `+${telefones.principal.internacional}`,
     areaServed: cidades.map((cidade) => ({

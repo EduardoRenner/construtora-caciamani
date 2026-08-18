@@ -24,7 +24,7 @@ export default function robots(): MetadataRoute.Robots {
       userAgent: "*",
       allow: "/",
       // Só o painel fica de fora. Os recortes do portfólio por tipo são
-      // páginas próprias e devem ser indexadas: "casas germinadas em
+      // páginas próprias e devem ser indexadas: "casas geminadas em
       // Maravilha" é exatamente o tipo de busca que traz cliente.
       disallow: ["/admin", "/admin/"],
     },

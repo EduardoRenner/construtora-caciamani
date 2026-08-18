@@ -2,17 +2,21 @@
 
 Tudo o que o site precisa e ainda não tem. Nada nesta lista foi
 preenchido por estimativa: onde falta informação, o site mostra
-`⟨PENDENTE⟩` na tela, de propósito. Hoje são 32 marcadores na home, 17
-em `/obras`, 14 em `/sobre`, 12 em `/contato` e 11 em cada página de obra.
+`⟨PENDENTE⟩` na tela, de propósito. Contados na tela em 18/08/2026, com
+o modo demonstração **desligado**: 28 na home, 15 em `/obras`, 13 em
+`/sobre`, 11 em `/contato`, 9 em cada página de obra e 5 em `/servicos`
+e `/orçamento` — nessas duas o que aparece é só o rodapé, que é global.
 
 > **Existe agora um modo demonstração** (`NEXT_PUBLIC_MODO_DEMO=true`),
 > para apresentar o site ao Carlos sem seção vazia. Ele **não resolve
 > nada desta lista** — só troca o marcador por conteúdo fictício,
 > centralizado em `src/content/demo.ts`. Com a flag ligada a home cai de
-> 32 marcadores para 6, `/obras` para 5 e `/sobre` para 10; os que
-> sobram são justamente os que conteúdo fictício não pode cobrir (itens
-> 1.1, 1.2, 1.3, 3.6, 3.8). **Tudo aqui continua valendo.** Ver seção
-> 0-B e o README.
+> 28 marcadores para **5**, `/obras` para **5**, `/sobre` para **9** e
+> `/contato` para **7**; os que sobram são justamente os que conteúdo
+> fictício não pode cobrir (itens 1.1, 1.2, 1.3, 3.6, 3.8). Repare que a
+> home fica com **5** marcadores e nenhum deles é de seção: são a fala
+> do Carlos e as quatro linhas cadastrais do rodapé, que aparecem em
+> toda página. **Tudo aqui continua valendo.** Ver seção 0-B e o README.
 
 Atualizado depois de uma **auditoria técnica completa** (dev sênior:
 código, segurança, performance, acessibilidade, SEO). Ver seção 0.
@@ -161,6 +165,109 @@ código.
   Continua no banco e visível em `/admin/obras` como rascunho; um clique
   republica.
 
+## 0-C. Revisão de apresentação (17/08/2026)
+
+Passe feito para responder a uma pergunta só: **dá para mostrar ao
+Carlos?** Três defeitos apareceram, e os três eram invisíveis nas
+verificações anteriores porque nenhuma ferramenta automática os pega.
+Todos corrigidos; a checagem foi por medição, não por impressão.
+
+**1. O site não tinha navegação no celular.** O botão "Falar no
+WhatsApp" do cabeçalho leva `className="hidden sm:inline-flex"`, mas
+`cn` (`src/lib/utils.ts`) é um `join` simples — não é `tailwind-merge`.
+As duas utilitárias sobrevivem no atributo, e quem decide o vencedor é
+a **ordem do CSS gerado**, onde `.inline-flex` vem depois de `.hidden`.
+Resultado: o botão aparecia no celular e empurrava o menu hambúrguer
+para **x=459 numa tela de 375px** — fora da tela, sem como tocar, e sem
+scroll horizontal para alcançá-lo (elemento `fixed` não estende a área
+rolável). Confirmado no bundle de produção, não só em dev. Corrigido
+pondo o `hidden` num elemento próprio; o hambúrguer voltou para
+323..367, com alvo de 44×44. O comportamento em ≥640px não mudou.
+A armadilha do `cn` está agora documentada no próprio `utils.ts`.
+
+**2. O cabeçalho ficava ilegível no tema claro.** O hero é foto escura
+que não acompanha o tema — por isso a `<section>` inteira é
+`superficie-escura`. O cabeçalho ficou de fora dessa regra: nasce
+transparente por cima da foto, mas com a tinta do tema. No tema claro
+dava, medido contra a própria foto com o véu aplicado:
+
+| elemento | antes | depois |
+|---|---|---|
+| marca "Caciamani" | 2,77:1 | 4,86:1 |
+| descritor e links do menu | 1,08:1 | 4,86:1 |
+| alternador de tema, hambúrguer | 2,77:1 | 4,86:1 |
+
+O Lighthouse marcou 100 em acessibilidade e não viu nada disso: ele não
+mede contraste contra imagem de fundo. Corrigido com um estado
+`sobreHero` (só em `/`, só antes de rolar, só com o menu fechado) que
+troca a tinta — classes **trocadas**, não somadas, pelo mesmo motivo do
+item 1. Páginas internas abrem em superfície clara e seguem com a tinta
+normal: conferido, 13,47:1, sem regressão.
+
+**3. "germinada" onde o certo é "geminada".** Casa geminada vem de
+*geminus*, gêmeo; "germinada" é o que a semente faz. Estava em 39
+lugares — incluindo o `<title>`, a meta description, o JSON-LD e o nome
+do serviço. O próprio projeto já escrevia "geminadas" nos nomes de
+arquivo e em dois slugs de obra, o que mostra que era lapso, não escolha
+regional. É o erro mais caro possível numa apresentação: o Carlos
+constrói geminada, ele conhece a palavra.
+
+Corrigido em **todo o texto visível** (24 ocorrências no `src/`, mais os
+documentos). **Não** foi mexido no que quebraria o banco: a chave
+`tipo: "germinada"` tem `check` no Postgres (`0002_conteudo.sql`), e
+dela dependem a URL `/obras/tipo/germinada`, o `id` do simulador e o
+arquivo `germinada.webp`. Ver item 6.8.
+
+**Depois da revisão, dois ajustes de design foram aplicados a pedido —
+tipografia e ritmo.** Ambos medidos, nenhum conferido a olho.
+
+*Corpo de leitura de 14px para 16px.* Descrição de serviço, itens do
+"o que inclui", descrição de etapa, resumo do card de obra e a
+apresentação do rodapé estavam em `text-sm`. Site que quer parecer caro
+não escreve o texto de leitura em 14px. Havia também uma incoerência: a
+**mesma** descrição de serviço saía em 14px na home e em 16px em
+`/servicos`, que herdava o corpo. Agora as duas batem.
+
+O que **não** cresceu, de propósito: a ficha do card (cidade · área ·
+prazo), o número da etapa, o qualificador da faixa de prova, os links e
+a linha legal do rodapé, as etiquetas e os botões. Esses são rótulo e
+metadado — se crescerem junto, a hierarquia achata e some o contraste
+entre "informação" e "leitura".
+
+Detalhe que acompanha a mudança: o traço âmbar que marca cada item das
+listas é alinhado opticamente ao centro da primeira linha. Com 14px/20px
+o centro ficava em 10px; com 16px/24px foi para 12px, então `mt-2` e
+`mt-2.5` viraram `mt-3`. Medido depois: desvio 0.
+
+*Ritmo vertical.* A home tinha seis seções seguidas no mesmo
+`padrao` — lia como pilha de blocos de peso igual. Três reatribuições,
+sem inventar nível novo de espaçamento:
+
+- **obras** passou a `solto` — é a prova do site, e além disso vinha
+  colada em "o que a Caciamani faz", que tem o mesmo tom `cal`; sem a
+  folga as duas liam como uma seção só e longa;
+- **o construtor** passou a `solto` — em cidade pequena é a pessoa que
+  fecha o negócio, e a seção já tinha peso de seção no código;
+- **área de atendimento** passou a `justo` — é seção menor, e apertá-la
+  acelera a chegada no fechamento.
+
+O ritmo saiu de `24·24·24·24·24·24` para **`16·32·24·24·32·24·16·32`**
+(md, em unidades do Tailwind). Em 375px o mesmo desenho, em escala
+menor: 48·80·64·64·80·64·48·80 px.
+
+**Verificado e sem problema:** nenhuma outra colisão de utilitárias nas
+6 rotas públicas (varredura por `display`, cor de texto e fundo em todas
+elas); sem scroll horizontal em 375/768/1280; todas as 8 rotas de obra e
+as 5 de filtro respondendo 200; `tsc --noEmit` e `eslint` limpos; build
+de produção passando com as 34 páginas.
+
+**Não verificado:** o painel de visualização não estava disponível nesta
+sessão, então **nada foi conferido a olho** — as conclusões acima vêm de
+medição de geometria e de estilo computado, e de leitura do código. As
+mudanças feitas são todas de cor e de visibilidade, com número medido
+antes e depois; mas uma passada visual antes da apresentação continua
+valendo, principalmente no tema claro da home.
+
 ## 1. Bloqueiam o site de ir ao ar
 
 | # | O que falta | Por que é bloqueante | Onde aparece |
@@ -188,8 +295,8 @@ errado, a frase muda.
 | # | O que falta | Onde aparece |
 |---|---|---|
 | 3.1 | **As quatro estatísticas**: clientes atendidos, projetos realizados, índice de satisfação, anos de mercado — com a frase que qualifica cada uma ("desde 19XX", "em Maravilha e região") | Faixa de prova da home |
-| 3.2 | **Arquivos originais dos dois renders que já estão no site.** O prédio residencial e as duas casas germinadas foram recuperados dos prints do Instagram: 850px e 672px de largura, recortados para tirar marca d'água, seta do carrossel e a faixa com a logo antiga. Servem, mas são de baixa resolução — no hero em tela grande a suavidade aparece. Pedir os renders originais ao projetista. | Hero, cards, /obras/[slug] |
-| 3.2b | **Fotos das obras entregues, em alta** — as que existem hoje são renders de projeto, não obra construída. Falta foto do que está de pé, incluindo a terceira obra (três germinadas), que segue sem imagem. | Home, /obras, /obras/[slug] |
+| 3.2 | **Arquivos originais dos dois renders que já estão no site.** O prédio residencial e as duas casas geminadas foram recuperados dos prints do Instagram: 850px e 672px de largura, recortados para tirar marca d'água, seta do carrossel e a faixa com a logo antiga. Servem, mas são de baixa resolução — no hero em tela grande a suavidade aparece. Pedir os renders originais ao projetista. | Hero, cards, /obras/[slug] |
+| 3.2b | **Fotos das obras entregues, em alta** — as que existem hoje são renders de projeto, não obra construída. Falta foto do que está de pé, incluindo a terceira obra (três geminadas), que segue sem imagem. | Home, /obras, /obras/[slug] |
 | 3.3 | **Pares antes/depois** — as duas fotos precisam ter **exatamente o mesmo enquadramento e a mesma proporção**. Isso tem que ser fotografado de propósito: vale tirar a foto do terreno antes de começar toda obra nova, do mesmo ponto. | Home, /obras/[slug] |
 | 3.4 | **Dados de cada obra**: ano, área em m², prazo de execução, uma linha de resumo, descrição | /obras e cards da home |
 | 3.5 | **Depoimentos** com nome, bairro/cidade, texto do cliente e autorização de uso | Home |
@@ -212,7 +319,7 @@ topo do arquivo. Na fase 7 passa a ser editável pelo painel.
 | # | O que falta |
 |---|---|
 | 4.1 | **Valor do CUB/SC** vigente e qual projeto-padrão usar (R-8 Normal, por exemplo) |
-| 4.2 | **Fator de custo por tipo de obra** — 6 valores (casa térrea, sobrado, germinada, prédio, reforma, só projeto) |
+| 4.2 | **Fator de custo por tipo de obra** — 6 valores (casa térrea, sobrado, geminada, prédio, reforma, só projeto) |
 | 4.3 | **Fator de custo por padrão de acabamento** — 3 valores (simples, médio, alto) |
 | 4.4 | **Amplitude da faixa** de preço (ex.: ±15%) |
 | 4.5 | **Prazo de obra por tipo**: meses de base + meses a cada 100 m² |
@@ -245,13 +352,14 @@ A razão entre os dois é o fator.
 | 6.5 | **`sharp` com vulnerabilidade alta**, dependência transitiva do Next (`npm audit`). O conserto automático sobe o Next para a versão 16 (major, pode quebrar coisa) — decisão do tipo que não se toma sem combinar. Na Vercel o impacto prático é baixo (a otimização de imagem roda na infraestrutura deles, não no `sharp` local), mas vale planejar a atualização do Next em algum momento, com tempo para testar. |
 | 6.6 | **`key={indice}` na lista de pares antes/depois** (`FormularioObra.tsx`, painel de obras). Funciona hoje porque a lista é pequena (1–3 pares) e cada item é totalmente controlado por estado — não é um bug que alguém vá notar na prática — mas é o tipo de padrão frágil que trava sutilmente se a lista crescer ou ganhar reordenação. Consertar direito exige guardar o `id` de cada par (o banco já tem um; hoje ele se perde na conversão para o formato do formulário) e usá-lo como `key`. |
 | 6.7 | **`/admin/clientes` não tem "apagar cliente".** Só existe apagar obra e depoimento. Como o CRM foi pensado para demonstração de venda, dá para limpar os dados de exemplo direto no SQL Editor (instrução no fim de `seed_demo_crm.sql`) — mas se o Carlos for usar o funil de verdade, vale adicionar a ação de apagar, com a mesma confirmação (`confirm()`) já usada em obras. |
+| 6.8 | **Renomear a chave `germinada` para `geminada`.** O texto visível já foi corrigido (ver 0-C), mas a chave interna continua com a grafia errada, e com ela a URL `/obras/tipo/germinada` — que é indexável e não aparece em busca por "casas geminadas". Trocar exige três coisas juntas: uma migração que atualize o `check` de `obras.tipo` e as linhas existentes, o `id` correspondente no simulador, e um redirecionamento 301 da URL antiga. É mexer no banco de produção — não se faz de passagem. |
 
 ---
 
 ## Já resolvido
 
 - **Logo definida**: é a de fundo marinho, com os prédios em ciano e "CPC CACIAMANI CONSTRUTORA" em âmbar. O tema escuro do site (padrão) foi construído em cima dela: marinho `#0A1826`, ciano `#35C2E3`, âmbar `#F2A81D`. A versão amarela antiga não é mais referência — se ela aparecer em material novo, é engano.
-- **Dois renders no ar**, recuperados dos prints do Instagram e limpos: o prédio residencial (hero + card + página da obra) e as duas casas germinadas. Ver 3.2 para os originais em alta.
+- **Dois renders no ar**, recuperados dos prints do Instagram e limpos: o prédio residencial (hero + card + página da obra) e as duas casas geminadas. Ver 3.2 para os originais em alta.
 - **Escopo do painel admin** (decidido na fase 6). Além da base — obras, estatísticas, textos, depoimentos, valores do orçamento, leads com CSV, contatos e cidades — entram três coisas: marcar lead como atendido com anotação, rascunho/publicado com prévia, e aviso de novo lead. Ficaram **de fora** por decisão: diário de obra com link privado, área logada por cliente, origem do lead, upload dedicado para celular, pedido automático de depoimento e agendamento de visita. Todos podem entrar depois.
 - **CRM (funil de clientes)** — adicionado depois da fase 8, revertendo a decisão da fase 6. Lá, "CRM com funil e estágios" tinha ficado marcado como "não vale a complexidade", com o argumento de que o Carlos ia continuar usando o WhatsApp e um meio-CRM só criaria um segundo lugar pra esquecer as coisas. O motivo mudou: não é para o Carlos usar todo dia, é para o painel ficar mais convincente **na hora de vender o serviço** — então o argumento original não se aplica mais. Entrou completo: `/admin/clientes` (quadro em colunas: Novo → Contatado → Orçamento enviado → Fechado/Perdido, com arrastar-e-soltar e um `<select>` acessível fazendo a mesma função) e `/admin/clientes/[id]` (histórico de interação com data, tarefas com vencimento). O início do painel ganhou um aviso de tarefas atrasadas/do dia. Migração em `supabase/migracoes/0003_crm.sql`.
   - **Dados de exemplo, para a demonstração**: `supabase/seed_demo_crm.sql`, com nomes claramente marcados "Exemplo — ...". Só para rodar num Supabase de demonstração, nunca no banco que o Carlos vai usar de verdade — o resto deste documento existe justamente para nenhum dado inventado chegar perto do que é real. Tem instrução de limpeza no fim do próprio arquivo.

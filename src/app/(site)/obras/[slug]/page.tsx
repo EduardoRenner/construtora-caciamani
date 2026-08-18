@@ -125,7 +125,7 @@ export default async function ObraPage({
 
         <div className="mt-14 max-w-3xl border-t border-sobre-contraste/15 pt-10">
           <h3 className="titulo text-xl text-sobre-contraste">Ou deixe seu contato aqui</h3>
-          <p className="prosa mt-3 text-sm text-vidro/75">
+          <p className="prosa mt-3 text-base text-vidro/75">
             A referência desta obra vai junto na mensagem.
           </p>
           <div className="mt-8">

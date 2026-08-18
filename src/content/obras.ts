@@ -4,8 +4,8 @@ import type { Obra } from "./tipos";
  * Obras da Caciamani.
  *
  * As três entradas abaixo vêm do material público da própria empresa
- * (destaques e posts do Instagram): o prédio, as duas casas germinadas
- * em Maravilha e as três germinadas. Título, tipo e cidade são reais.
+ * (destaques e posts do Instagram): o prédio, as duas casas geminadas
+ * em Maravilha e as três geminadas. Título, tipo e cidade são reais.
  *
  * Metragem, prazo, ano, descrição e fotos ficam `null` porque o cliente
  * ainda não forneceu — e número de obra inventado é passivo comercial.
@@ -39,7 +39,7 @@ export const obras: Obra[] = [
   },
   {
     slug: "duas-casas-geminadas-maravilha",
-    titulo: "Duas casas germinadas",
+    titulo: "Duas casas geminadas",
     tipo: "germinada",
     cidade: "Maravilha",
     uf: "SC",
@@ -50,12 +50,12 @@ export const obras: Obra[] = [
     descricao: null,
     capa: {
       src: "/obras/duas-casas-geminadas.webp",
-      alt: "Render das duas casas germinadas em Maravilha: fachada simétrica, coluna central em pedra natural e iluminação embutida sob a marquise",
+      alt: "Render das duas casas geminadas em Maravilha: fachada simétrica, coluna central em pedra natural e iluminação embutida sob a marquise",
     },
     galeria: [
       {
         src: "/obras/duas-casas-geminadas.webp",
-        alt: "Fachada das duas casas germinadas ao anoitecer, com a coluna de pedra separando as duas entradas",
+        alt: "Fachada das duas casas geminadas ao anoitecer, com a coluna de pedra separando as duas entradas",
       },
     ],
     antesDepois: [],
@@ -64,7 +64,7 @@ export const obras: Obra[] = [
   },
   {
     slug: "tres-casas-geminadas",
-    titulo: "Três casas germinadas",
+    titulo: "Três casas geminadas",
     tipo: "germinada",
     cidade: "Maravilha",
     uf: "SC",
@@ -75,7 +75,7 @@ export const obras: Obra[] = [
     descricao: null,
     capa: {
       src: null,
-      alt: "Conjunto de três casas germinadas construídas pela Caciamani",
+      alt: "Conjunto de três casas geminadas construídas pela Caciamani",
     },
     galeria: [],
     antesDepois: [],

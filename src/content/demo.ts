@@ -147,7 +147,7 @@ export const obrasDemo: Obra[] = [
       "Duas unidades espelhadas sobre uma parede compartilhada, cada uma com garagem coberta, três dormitórios e pátio próprio nos fundos. Executar as duas em paralelo é o que derruba o custo por unidade: a mesma fôrma, a mesma equipe de alvenaria e uma única mobilização de cobertura atendem as duas casas. A fachada disfarça a divisa com um volume central em pedra, para o conjunto não ler como “duas casas iguais”.",
     capa: {
       src: "/obras/demo/germinada.webp",
-      alt: "Desenho de elevação de duas casas germinadas espelhadas, com volume central em pedra separando as entradas",
+      alt: "Desenho de elevação de duas casas geminadas espelhadas, com volume central em pedra separando as entradas",
     },
     galeria: [
       {
@@ -262,7 +262,7 @@ export const depoimentosDemo: Depoimento[] = [
     autorizado: true,
   },
   {
-    nome: "Cliente — casas germinadas",
+    nome: "Cliente — casas geminadas",
     cidade: "Pinhalzinho",
     bairro: null,
     texto:
@@ -295,7 +295,7 @@ export const empresaDemo = {
   desdeAno: 2008,
   /** Texto sobre a empresa — não é fala de ninguém, é descrição. */
   historia:
-    "Construtora com sede em Maravilha, no extremo-oeste catarinense, atuando em casas, casas germinadas, prédios residenciais e reformas. A mesma equipe acompanha a obra do primeiro desenho à entrega das chaves, com cronograma por etapa e preço fechado antes do início. Texto demonstrativo — a história real da empresa entra aqui.",
+    "Construtora com sede em Maravilha, no extremo-oeste catarinense, atuando em casas, casas geminadas, prédios residenciais e reformas. A mesma equipe acompanha a obra do primeiro desenho à entrega das chaves, com cronograma por etapa e preço fechado antes do início. Texto demonstrativo — a história real da empresa entra aqui.",
 } as const;
 
 /**

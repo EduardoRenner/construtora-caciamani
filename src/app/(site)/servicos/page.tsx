@@ -10,7 +10,7 @@ import { linkWhatsApp } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Serviços",
-  description: `Construção de casas, casas germinadas, prédios, reformas e projetos em ${empresa.cidadeSede}/${empresa.uf} e região.`,
+  description: `Construção de casas, casas geminadas, prédios, reformas e projetos em ${empresa.cidadeSede}/${empresa.uf} e região.`,
   alternates: { canonical: "/servicos" },
 };
 
@@ -45,10 +45,10 @@ export default function ServicosPage() {
                 <p className="prosa text-concreto">{servico.descricao}</p>
                 <ul className="mt-6 flex flex-col gap-2.5">
                   {servico.inclui.map((item) => (
-                    <li key={item} className="flex gap-3 text-sm">
+                    <li key={item} className="flex gap-3 text-base">
                       <span
                         aria-hidden="true"
-                        className="mt-2.5 h-px w-4 shrink-0 bg-marca"
+                        className="mt-3 h-px w-4 shrink-0 bg-marca"
                       />
                       {item}
                     </li>
@@ -73,7 +73,7 @@ export default function ServicosPage() {
                 {String(indice + 1).padStart(2, "0")}
               </span>
               <h3 className="titulo mt-3 text-xl text-sobre-contraste">{etapa.titulo}</h3>
-              <p className="prosa mt-3 text-sm text-vidro/75">{etapa.descricao}</p>
+              <p className="prosa mt-3 text-base text-vidro/75">{etapa.descricao}</p>
               <p className="etiqueta mt-4 text-vidro/70">{etapa.entrega}</p>
             </li>
           ))}

@@ -34,9 +34,9 @@ export const servicos: Servico[] = [
   },
   {
     slug: "germinadas",
-    titulo: "Casas germinadas",
+    titulo: "Casas geminadas",
     descricao:
-      "Duas ou três unidades no mesmo terreno. A parede compartilhada derruba o custo por unidade — é por isso que investidor da região constrói germinada para vender ou alugar.",
+      "Duas ou três unidades no mesmo terreno. A parede compartilhada derruba o custo por unidade — é por isso que investidor da região constrói geminada para vender ou alugar.",
     inclui: [
       "Estudo de aproveitamento do terreno",
       "Unidades espelhadas ou independentes",

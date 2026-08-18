@@ -12,7 +12,7 @@ export const revalidate = 300;
  * Um recorte do portfólio por tipo de obra.
  *
  * Existe como rota própria, e não como `?tipo=`, porque assim é estática,
- * indexável e compartilhável — "casas germinadas em Maravilha" vira uma
+ * indexável e compartilhável — "casas geminadas em Maravilha" vira uma
  * página de verdade, que é exatamente o tipo de busca que traz cliente
  * para uma construtora regional.
  */

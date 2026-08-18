@@ -13,7 +13,7 @@ import { cn } from "@/lib/utils";
  * Cada recorte é uma rota estática (`/obras/tipo/germinada`), não uma
  * query string. Isso resolve três coisas de uma vez:
  *   - funciona sem JavaScript;
- *   - cada recorte é uma página indexável — "casas germinadas em
+ *   - cada recorte é uma página indexável — "casas geminadas em
  *     Maravilha" vira uma página de verdade, o que é ouro para SEO local;
  *   - a página volta a ser estática, e a meta description vai no
  *     `<head>` desde o primeiro byte. Em rota dinâmica o Next emite os

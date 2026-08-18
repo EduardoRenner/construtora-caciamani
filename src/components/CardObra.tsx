@@ -62,7 +62,7 @@ export function CardObra({
       <FichaDoCard obra={obra} />
 
       {obra.resumo || !MODO_DEMO ? (
-        <p className="mt-3 text-sm text-concreto">
+        <p className="mt-3 text-base text-concreto">
           {obra.resumo ?? <Pendente>uma linha sobre esta obra</Pendente>}
         </p>
       ) : null}

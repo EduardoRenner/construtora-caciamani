@@ -50,7 +50,7 @@ export const metadata: Metadata = {
     default: `${empresa.nome} — construção de casas e prédios em ${empresa.cidadeSede}/${empresa.uf}`,
     template: `%s — ${empresa.nome}`,
   },
-  description: `Construtora e incorporadora em ${empresa.cidadeSede}, Santa Catarina. Projeto e construção de casas, casas germinadas e prédios em ${empresa.cidadeSede} e região.`,
+  description: `Construtora e incorporadora em ${empresa.cidadeSede}, Santa Catarina. Projeto e construção de casas, casas geminadas e prédios em ${empresa.cidadeSede} e região.`,
   openGraph: {
     type: "website",
     locale: "pt_BR",

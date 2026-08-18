@@ -63,7 +63,7 @@ export const tiposConstrucao: Array<{
   },
   {
     id: "germinada",
-    rotulo: "Casas germinadas",
+    rotulo: "Casas geminadas",
     descricao:
       "Duas ou mais unidades com parede compartilhada. Custa menos por unidade.",
   },
