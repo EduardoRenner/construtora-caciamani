@@ -26,9 +26,9 @@ código, segurança, performance, acessibilidade, SEO). Ver seção 0.
 > por linha, não só "sem erro": tabelas, RLS, o gatilho de segurança e
 > até um insert de teste real (com tentativa de forjar campo, barrada
 > pelo gatilho — depois apagado). `.env.local` e as variáveis da Vercel
-> já estão configuradas. Falta só **criar o login do Carlos** — ver 1.4b,
-> é a única coisa que ninguém além de um humano no painel do Supabase
-> pode fazer.
+> já estão configuradas. **O login também já existe** (18/08/2026) —
+> ver 1.4b e a seção 0-D, que registra o que a verificação do banco
+> encontrou junto.
 
 ---
 
@@ -268,6 +268,51 @@ mudanças feitas são todas de cor e de visibilidade, com número medido
 antes e depois; mas uma passada visual antes da apresentação continua
 valendo, principalmente no tema claro da home.
 
+## 0-D. Estado do banco e do painel (18/08/2026)
+
+Verificação feita quando o login do Carlos foi criado. A pergunta era
+"dá para entrar no painel agora?" — dá, mas o que apareceu no caminho
+importa mais do que a resposta.
+
+**O acesso está de pé.** Duas contas em `auth.users`, as duas com
+e-mail confirmado. O portão foi testado por HTTP: `/admin`,
+`/admin/leads` e `/admin/clientes` devolvem 307 para
+`/admin/entrar?de=…`, com o destino preservado no parâmetro, e a página
+de login responde 200. Ver 1.4b.
+
+**Contagem real das tabelas, no projeto de produção:**
+
+| tabela | linhas | observação |
+|---|---|---|
+| `obras` | 1 | **nenhuma publicada** |
+| `obra_fotos` | 1 | |
+| `depoimentos` | 0 | |
+| `configuracoes` | 0 | os 4 números da faixa de prova nunca foram salvos |
+| `leads` | 8 | 6 são "Exemplo" (ver 1.6), 2 não são (ver 2.3) |
+| `lead_interacoes` | 5 | do seed de demonstração |
+| `lead_tarefas` | 5 | do seed de demonstração |
+
+**O achado que pesa na apresentação: o painel contradiz o site.** As
+obras que o site mostra não vêm do banco — vêm do arquivo de semente
+(`src/content/obras.ts`) e do modo demonstração. No banco existe **uma**
+obra, e ela está despublicada. Então abrir `/admin/obras` na frente do
+Carlos para dizer "é aqui que você edita o site" mostra 1 item
+despublicado enquanto o site ao lado exibe 6. A pergunta que isso gera é
+justamente a que não se quer responder na hora.
+
+Duas saídas, e as duas servem:
+
+- **demonstrar o CRM e os leads em vez do editor de obras** — essas
+  telas estão cheias (por causa do seed) e contam uma história boa;
+- **cadastrar as 3 obras reais pelo painel antes da apresentação** —
+  resolve o item 3.4 de quebra, e faz os cards delas deixarem de ser os
+  mais vazios da grade, que é o problema apontado na seção 0-C.
+
+**Sobre o que não foi olhado:** os e-mails das duas contas e o conteúdo
+dos 2 leads não-exemplo não foram lidos. São dado pessoal, e a
+verificação não precisava deles — contagem e estado bastaram. Ficam
+como 1.4b e 2.3, para conferência humana no dashboard.
+
 ## 1. Bloqueiam o site de ir ao ar
 
 | # | O que falta | Por que é bloqueante | Onde aparece |
@@ -276,8 +321,9 @@ valendo, principalmente no tema claro da home.
 | 1.2 | **CREA e nome do responsável técnico** | Exigência do CONFEA/CREA para divulgação de serviços de engenharia. | Rodapé |
 | 1.3 | **Endereço do escritório** (rua, bairro, CEP) | Alimenta o `LocalBusiness` do Google e a página de contato. Sem ele o SEO local perde muito. | Contato, rodapé, JSON-LD |
 | 1.4 | ~~Criar o projeto no Supabase, rodar as migrações, preencher `.env.local`~~ — **feito em 12/08/2026.** Projeto `caciamani` (`dlrfheafvjjcckwnzunh`), as 4 migrações aplicadas e verificadas, `.env.local` e as 3 variáveis da Vercel (produção, preview, dev) configuradas. | — | — |
-| 1.4b | **Criar o login do Carlos**: no painel do Supabase, **Authentication › Users › Add user** — e-mail e senha à mão. Não existe cadastro aberto no site, e criar conta/senha não é algo que se automatiza por API — precisa ser um humano com acesso ao painel do Supabase. | Sem isso, ninguém consegue entrar em `/admin` — o painel já funciona (confirmei: `/admin` redireciona pro login corretamente), só falta a credencial de quem vai usar. | Login do painel |
+| 1.4b | ~~Criar o login do Carlos~~ — **feito em 18/08/2026.** Existem **2 contas** em `auth.users`, as duas com e-mail confirmado (confirmação importa: conta criada pelo dashboard sem confirmar falha no `signInWithPassword`). O portão foi testado e responde certo: `/admin`, `/admin/leads` e `/admin/clientes` devolvem 307 para `/admin/entrar?de=…`, preservando o destino. **Conferir no dashboard quais são as duas** — a mais antiga é de 11/08, anterior a esta lista, e não há papel de leitura: qualquer conta autenticada manda em tudo (ver 1.6). | — | — |
 | 1.5 | **Logo em vetor** (`.svg`, `.ai`, `.pdf` ou PNG grande com fundo transparente) | Hoje só existe em raster, do Instagram. Sem vetor não dá para gerar favicon nítido, imagem Open Graph nem a versão monocromática para fundo escuro. O site usa um wordmark provisório em tipo — **não** um monograma inventado. | Header, rodapé, favicon, OG |
+| 1.6 | **Limpar o seed de demonstração do CRM antes de o Carlos usar o painel.** A verificação de 18/08 encontrou no banco de produção **6 leads começando com "Exemplo", 5 interações e 5 tarefas** — é o `supabase/seed_demo_crm.sql`, que avisa no próprio arquivo para rodar só num Supabase de demonstração, nunca no que o Carlos vai usar. Para a apresentação ajuda, porque o funil aparece cheio; depois disso ele começaria a trabalhar com clientes falsos misturados aos reais. A limpeza está no fim do próprio arquivo. | Se ficar, o CRM nasce sujo e não dá para confiar em nenhuma contagem do funil. | `/admin/clientes`, `/admin/leads` |
 
 ## 2. Precisam da conferência do Carlos
 
@@ -289,6 +335,7 @@ errado, a frase muda.
 |---|---|---|
 | 2.1 | **Descrição dos 5 serviços** e o que está incluído em cada um. Exemplo concreto: o site afirma que a Caciamani cuida da documentação para aprovação. Cuida mesmo? | `src/content/servicos.ts` |
 | 2.2 | **As 6 etapas da obra** e o que o cliente recebe ao fim de cada uma. É assim que o Carlos trabalha? | `src/content/processo.ts` |
+| 2.3 | **Os 2 leads que não começam com "Exemplo"** (verificação de 18/08). Podem ser envios reais do formulário ou sobra dos testes da auditoria de 12/08 — o conteúdo não foi aberto aqui, é dado pessoal de terceiro. Se forem reais, alguém pediu orçamento e ninguém respondeu; se forem teste, entram na limpeza do 1.6. | tabela `leads` |
 
 ## 3. Bloqueiam seções inteiras
 
@@ -369,7 +416,7 @@ A razão entre os dois é o fator.
   - **Testado o caminho real de ponta a ponta**: um POST HTTP contra a API do Supabase, com a chave anônima, exatamente como o site faz. Confirmou 201 e a linha apareceu no banco. Uma segunda tentativa, forjando `atendido=true` e `estagio='fechado'` no corpo da requisição, confirmou que o gatilho da 0004 reseta os dois campos — a brecha de segurança fechada nesta auditoria funciona de verdade, não só no papel. As duas linhas de teste foram apagadas depois.
   - **Achado no caminho, sem ser bug**: pedir o registro de volta no insert (`Prefer: return=representation` / `.select()` no client JS) falha com "row-level security policy" para a chave anônima — porque `RETURNING` exige política de SELECT, e `anon` só tem política de INSERT em `leads` (de propósito: grava, não lê). O código real (`acoes/leads.ts`) nunca pede o registro de volta, então nunca foi afetado; documentado aqui para não confundir alguém testando a API manualmente no futuro.
   - `.env.local` criado (fora do git) e as 3 variáveis (produção/preview/dev) configuradas na Vercel, com novo deploy publicado.
-  - Falta só criar o login do Carlos — ver 1.4b, é passo manual no painel do Supabase.
+  - O login foi criado em 18/08/2026 — ver 1.4b e a seção 0-D.
 - **WhatsApp do site**: confirmado o **(49) 99192-7673**. O (11) 99654-7673, que também aparecia no material público, não entra.
 - Paleta, tipografia e o elemento assinatura ("a cota") — aprovados na fase 1.
 - **Lighthouse no celular, contra o build de produção**, em 8 páginas:
