@@ -20,11 +20,38 @@ import { Botao, BotaoLink } from "@/components/ui/Botao";
 import { rotulosTipoObra } from "@/content/tipos";
 
 interface ParEditavel {
+  /**
+   * Identidade estável do par, só para o React. NÃO vai para o banco.
+   *
+   * Antes daqui a lista usava `key={indice}`. Com índice, apagar ou
+   * reordenar um par faz o React reaproveitar o nó errado: o estado
+   * interno dos campos de foto (proporção medida, arquivo em envio)
+   * fica no par de cima. Não aparecia porque a lista é curta e cada
+   * campo é controlado, mas quebra no primeiro reordenamento.
+   *
+   * A chave nasce no cliente e não vem do banco de propósito: par
+   * recém-adicionado ainda não tem id, e o salvamento reescreve a lista
+   * inteira — o id do banco não serviria para os dois casos.
+   */
+  chave: string;
   antes: FotoComProporcao;
   depois: FotoComProporcao;
   legenda: string;
   prazo: string;
   ano: string;
+}
+
+/**
+ * Identificador só de interface. `randomUUID` não existe em contexto
+ * inseguro (http em rede local, por exemplo), então há reserva.
+ */
+let contadorDeChaves = 0;
+function novaChave(): string {
+  if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
+    return crypto.randomUUID();
+  }
+  contadorDeChaves += 1;
+  return `par-${Date.now()}-${contadorDeChaves}`;
 }
 
 export function FormularioObra({ obra }: { obra?: DadosObra & { id: string } }) {
@@ -48,6 +75,7 @@ export function FormularioObra({ obra }: { obra?: DadosObra & { id: string } }) 
   const [fotos, setFotos] = useState<FotoEnviada[]>(obra?.fotos ?? []);
   const [pares, setPares] = useState<ParEditavel[]>(
     (obra?.antesDepois ?? []).map((par) => ({
+      chave: novaChave(),
       antes: { url: par.antesUrl, alt: par.antesAlt, proporcao: null },
       depois: { url: par.depoisUrl, alt: par.depoisAlt, proporcao: null },
       legenda: par.legenda ?? "",
@@ -204,7 +232,7 @@ export function FormularioObra({ obra }: { obra?: DadosObra & { id: string } }) 
               Math.abs(par.antes.proporcao - par.depois.proporcao) > 0.02;
 
             return (
-              <div key={indice} className="border-t border-noite/12 pt-6 first:border-0 first:pt-0">
+              <div key={par.chave} className="border-t border-noite/12 pt-6 first:border-0 first:pt-0">
                 <div className="grid gap-5 md:grid-cols-2">
                   <FotoUnica
                     rotulo="Antes"
@@ -283,7 +311,14 @@ export function FormularioObra({ obra }: { obra?: DadosObra & { id: string } }) 
             onClick={() =>
               setPares([
                 ...pares,
-                { antes: fotoVazia, depois: fotoVazia, legenda: "", prazo: "", ano: "" },
+                {
+                  chave: novaChave(),
+                  antes: fotoVazia,
+                  depois: fotoVazia,
+                  legenda: "",
+                  prazo: "",
+                  ano: "",
+                },
               ])
             }
           >

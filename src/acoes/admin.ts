@@ -369,6 +369,28 @@ export async function salvarDepoimento(dados: DadosDepoimento): Promise<Resposta
   return { ok: true };
 }
 
+/**
+ * Apaga um cliente do funil, com o histórico junto.
+ *
+ * As interações e tarefas somem por `on delete cascade` (0003_crm.sql),
+ * então não há linha órfã nem necessidade de apagar filho por filho.
+ *
+ * Existe principalmente por causa dos dados de exemplo: o
+ * `seed_demo_crm.sql` foi rodado no projeto de produção, e sem esta ação
+ * a única forma de tirar um "Exemplo — …" de lá seria pelo SQL Editor.
+ * Ver o item 1.6 do PENDENCIAS.md.
+ */
+export async function apagarCliente(id: string): Promise<Resposta> {
+  const supabase = await exigirSessao();
+  const { error } = await supabase.from("leads").delete().eq("id", id);
+  if (error) return { ok: false, erro: error.message };
+
+  revalidatePath("/admin/clientes");
+  revalidatePath("/admin/leads");
+  revalidatePath("/admin");
+  return { ok: true };
+}
+
 export async function apagarDepoimento(id: string): Promise<Resposta> {
   const supabase = await exigirSessao();
   const { error } = await supabase.from("depoimentos").delete().eq("id", id);

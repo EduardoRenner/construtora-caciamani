@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import {
+  apagarCliente,
   apagarTarefa,
   concluirTarefa,
   criarTarefa,
@@ -64,10 +65,39 @@ export function PainelCliente({
   const [salvandoInteracao, setSalvandoInteracao] = useState(false);
   const [erroInteracao, setErroInteracao] = useState<string | null>(null);
 
+  const [apagando, setApagando] = useState(false);
+
   const [tituloTarefa, setTituloTarefa] = useState("");
   const [vencimentoTarefa, setVencimentoTarefa] = useState("");
   const [salvandoTarefa, setSalvandoTarefa] = useState(false);
   const [erroTarefa, setErroTarefa] = useState<string | null>(null);
+
+  async function removerCliente() {
+    // Mesma confirmação usada em obra e depoimento. Apagar leva junto o
+    // histórico inteiro (interações e tarefas, por cascata no banco), e
+    // por isso a pergunta diz o tamanho do estrago antes de acontecer.
+    const aviso =
+      `Apagar ${lead.nome} do funil?
+
+` +
+      `O histórico vai junto: ${interacoes.length} ` +
+      `${interacoes.length === 1 ? "interação" : "interações"} e ` +
+      `${tarefas.length} ${tarefas.length === 1 ? "tarefa" : "tarefas"}. ` +
+      `Não dá para desfazer.`;
+    if (!confirm(aviso)) return;
+
+    setApagando(true);
+    const resposta = await apagarCliente(lead.id);
+
+    if (!resposta.ok) {
+      setApagando(false);
+      alert(resposta.erro ?? "Não foi possível apagar este cliente.");
+      return;
+    }
+
+    router.replace("/admin/clientes");
+    router.refresh();
+  }
 
   async function mudarEstagio(novo: EstagioLead) {
     const anterior = estagio;
@@ -288,6 +318,31 @@ export function PainelCliente({
           </ul>
         )}
       </Painel>
+
+      {/* Fica no fim e fora dos painéis de trabalho, separado por um fio:
+          é a única ação irreversível da tela e não deve dividir espaço
+          com "salvar interação". */}
+      <div className="border-t border-noite/12 pt-6">
+        {/* A cor vai num <span> interno, não no `className` do botão:
+            `variante="contorno"` já traz `text-noite`, e `cn` é um join
+            simples — as duas utilitárias sobreviveriam juntas e o
+            vencedor sairia da ordem do CSS gerado. Hoje `.text-oxido`
+            vence por acaso; não é coisa para depender. Ver `lib/utils.ts`. */}
+        <Botao
+          type="button"
+          variante="contorno"
+          onClick={removerCliente}
+          disabled={apagando}
+        >
+          <span className="text-oxido">
+            {apagando ? "Apagando…" : "Apagar este cliente"}
+          </span>
+        </Botao>
+        <p className="mt-3 text-sm text-concreto">
+          Some do funil junto com todo o histórico. Use para limpar os
+          clientes de exemplo depois da demonstração.
+        </p>
+      </div>
     </div>
   );
 }
